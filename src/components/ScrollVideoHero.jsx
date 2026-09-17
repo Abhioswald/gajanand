@@ -1,0 +1,325 @@
+import React, { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register ScrollTrigger plugin
+gsap.registerPlugin(ScrollTrigger);
+
+export default function ScrollVideoHero() {
+  const containerRef = useRef(null);
+  const stickyRef = useRef(null);
+  const videoRef = useRef(null);
+  const introTextRef = useRef(null);
+  const outroTextRef = useRef(null);
+  const scrollIndicatorRef = useRef(null);
+  const [isReducedMotion, setIsReducedMotion] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handleMotionPreference = (e) => setIsReducedMotion(e.matches);
+    mediaQuery.addEventListener('change', handleMotionPreference);
+
+    return () => mediaQuery.removeEventListener('change', handleMotionPreference);
+  }, []);
+
+
+  useEffect(() => {
+    if (isReducedMotion) {
+      // In reduced motion mode, do not setup scroll scrubbing
+      return;
+    }
+
+    const video = videoRef.current;
+    const container = containerRef.current;
+    if (!container) return;
+
+    // Create GSAP Context for proper cleanup
+    const ctx = gsap.context(() => {
+      const initScrollAnimation = () => {
+        const duration = video && video.duration && !isNaN(video.duration) && video.duration > 0
+          ? video.duration
+          : 5; // Safe fallback duration if metadata is loading
+
+        // Main scrub timeline linked to the 400vh section scroll
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: container,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 1.2, // Smooth lerp for buttery seek responsiveness without stutter
+            invalidateOnRefresh: true,
+          },
+        });
+
+        // 1. Scroll-driven video currentTime mapping
+        if (video) {
+          // Pause video explicitly to ensure strict scroll control
+          video.pause();
+
+          tl.fromTo(
+            video,
+            { currentTime: 0 },
+            {
+              currentTime: duration,
+              ease: 'none',
+              duration: 1,
+            },
+            0
+          );
+        }
+
+        // 2. Initial Hero Content Animation (fades out completely by ~38-42% scroll)
+        if (introTextRef.current) {
+          tl.to(
+            introTextRef.current,
+            {
+              opacity: 0,
+              y: -30,
+              filter: 'blur(4px)',
+              ease: 'power2.inOut',
+              duration: 0.38,
+            },
+            0
+          );
+        }
+
+        // 3. Scroll indicator fades out rapidly near top (0 to 12% scroll)
+        if (scrollIndicatorRef.current) {
+          tl.to(
+            scrollIndicatorRef.current,
+            {
+              opacity: 0,
+              y: 15,
+              ease: 'power1.out',
+              duration: 0.12,
+            },
+            0
+          );
+        }
+
+        // 4. Final Label Reveal (emerges around 72% to 95% scroll)
+        if (outroTextRef.current) {
+          tl.fromTo(
+            outroTextRef.current,
+            {
+              opacity: 0,
+              y: 35,
+              scale: 0.96,
+            },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              ease: 'power3.out',
+              duration: 0.22,
+            },
+            0.72
+          );
+        }
+      };
+
+      if (video) {
+        if (video.readyState >= 1) {
+          // Metadata already loaded
+          initScrollAnimation();
+        } else {
+          // Wait for metadata loaded
+          const onLoadedMetadata = () => {
+            initScrollAnimation();
+          };
+          video.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
+          
+          // Safety timeout in case video source takes time or is placeholder
+          const fallbackTimer = setTimeout(() => {
+            initScrollAnimation();
+          }, 300);
+
+          return () => {
+            video.removeEventListener('loadedmetadata', onLoadedMetadata);
+            clearTimeout(fallbackTimer);
+          };
+        }
+      } else {
+        initScrollAnimation();
+      }
+    }, containerRef);
+
+    return () => {
+      ctx.revert(); // Clean up all GSAP timelines and ScrollTriggers
+    };
+  }, [isReducedMotion]);
+
+  // Smooth scroll handler for CTA
+  const handleCtaClick = () => {
+    const target = document.getElementById('brand-story');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    } else if (containerRef.current) {
+      const targetScroll = containerRef.current.offsetTop + window.innerHeight * 1.5;
+      window.scrollTo({
+        top: targetScroll,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+
+  return (
+    <section
+      ref={containerRef}
+      className="relative w-full h-[350vh] md:h-[400vh] bg-[#120B07] select-none"
+      aria-label="ગજાનંદ Vada Pav Hero Presentation"
+    >
+      {/* Pinned Sticky 100vh Hero Viewport */}
+      <div
+        ref={stickyRef}
+        className="sticky top-0 left-0 w-full h-[100dvh] h-screen overflow-hidden flex items-center justify-between"
+      >
+        {/* Background Video Layer */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
+          <video
+            ref={videoRef}
+            src="/assets/vada-pav-scroll.mp4"
+            poster="/assets/vada-pav-poster.jpg"
+            preload="metadata"
+            playsInline
+            muted
+            aria-hidden="true"
+            className="w-full h-full object-cover object-center md:object-center pointer-events-none will-change-transform"
+          />
+        </div>
+
+        {/* Gujarat Cinematic Atmospheric Gradient Overlays */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#120B07] via-transparent to-[#120B07]/70" />
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-[#120B07]/92 via-[#120B07]/50 to-transparent w-full md:w-3/4" />
+        <div className="absolute inset-0 pointer-events-none cinematic-vignette opacity-75" />
+
+        {/* Ambient Warm Sandstone & Saffron Glow */}
+        <div 
+          className="absolute -top-24 -left-24 w-96 h-96 bg-[#D96814]/15 rounded-full blur-3xl pointer-events-none"
+          aria-hidden="true"
+        />
+        <div 
+          className="absolute top-1/2 -right-32 w-80 h-80 bg-[#C98B5B]/10 rounded-full blur-3xl pointer-events-none"
+          aria-hidden="true"
+        />
+
+        {/* Hero Content Container */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-between h-full py-10 md:py-14">
+          
+          {/* Top Bar / Brand Wordmark Badge */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#D96814] shadow-[0_0_12px_#D96814] animate-pulse" />
+              <div className="flex flex-col">
+                <span className="font-['Noto_Serif_Gujarati',serif] text-lg sm:text-xl font-bold tracking-wide text-[#F7E8CF] leading-tight">
+                  ગજાનંદ
+                </span>
+                <span className="text-[10px] tracking-[0.25em] text-[#C98B5B] uppercase font-semibold">
+                  GAJANAND • GUJARAT
+                </span>
+              </div>
+            </div>
+
+            {/* Subtle Gujarat Heritage Coordinate / Descriptor */}
+            <div className="hidden sm:flex items-center gap-2 px-3.5 py-1 rounded-full border border-[#C98B5B]/20 bg-[#120B07]/60 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F2A321]" />
+              <span className="font-sans text-[11px] font-medium tracking-[0.15em] text-[#C98B5B]">
+                અસલી સ્ટ્રીટ ફૂડ
+              </span>
+            </div>
+          </div>
+
+          {/* Left-Center Main Hero Typography */}
+          <div 
+            ref={introTextRef}
+            className="max-w-xl lg:max-w-2xl text-left my-auto will-change-transform"
+          >
+            {/* Eyebrow in Gujarati */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2A130A]/80 border border-[#D96814]/30 backdrop-blur-md mb-4 sm:mb-6 shadow-lg shadow-black/40">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F2A321]" />
+              <p className="font-['Noto_Sans_Gujarati',sans-serif] text-xs sm:text-sm font-semibold tracking-wider text-[#F2A321]">
+                ગુજરાતની સ્વાદ પરંપરા
+              </p>
+            </div>
+
+            {/* Brand Wordmark Display Heading */}
+            <h1 className="font-['Noto_Serif_Gujarati',serif] font-extrabold text-5xl sm:text-7xl lg:text-8xl xl:text-9xl tracking-tight leading-[1.1] text-[#F7E8CF]">
+              ગજાનંદ
+            </h1>
+
+            {/* Secondary Headline */}
+            <p className="font-['Noto_Sans_Gujarati',sans-serif] font-bold text-2xl sm:text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-[#F7E8CF] via-[#F2A321] to-[#D96814] mt-2 sm:mt-3 leading-snug">
+              ગુજરાતનો સ્વાદ. દરેક બાઇટમાં.
+            </p>
+
+            {/* Supporting Text */}
+            <p className="font-['Noto_Sans_Gujarati',sans-serif] text-base sm:text-lg md:text-xl text-[#F7E8CF]/85 font-normal tracking-wide mt-4 sm:mt-5 leading-relaxed max-w-lg">
+              ગરમ, મસાલેદાર અને દિલથી બનાવેલું.
+            </p>
+
+            {/* Interactive Call to Action */}
+            <div className="mt-8 sm:mt-10 flex items-center gap-4">
+              <button
+                id="hero-cta-btn"
+                onClick={handleCtaClick}
+                className="group relative inline-flex items-center gap-3 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#D96814] to-[#E98224] text-white font-medium text-sm sm:text-base tracking-wide transition-all duration-300 hover:shadow-[0_0_25px_rgba(217,104,20,0.55)] hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2A321] focus-visible:ring-offset-2 focus-visible:ring-offset-[#120B07] cursor-pointer"
+                aria-label="અમારી કહાની જુઓ"
+              >
+                <span className="font-['Noto_Sans_Gujarati',sans-serif] font-medium">અમારી કહાની જુઓ</span>
+                <svg 
+                  className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 text-[#F7E8CF]" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Outro Reveal Label (Appears near final scroll progress) */}
+          <div
+            ref={outroTextRef}
+            className="absolute inset-x-0 bottom-16 sm:bottom-20 mx-auto w-fit text-center pointer-events-none opacity-0 will-change-transform z-20 px-6"
+            aria-live="polite"
+          >
+            <div className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-[#120B07]/85 border border-[#F2A321]/40 backdrop-blur-xl shadow-2xl shadow-black/80">
+              <span className="w-2 h-2 rounded-full bg-[#D96814] animate-ping" />
+              <p className="font-['Noto_Sans_Gujarati',sans-serif] font-bold text-sm sm:text-base md:text-lg tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#F7E8CF] via-[#F2A321] to-[#E98224]">
+                ગુજરાતની ધરોહર • અસલી સ્વાદ
+              </p>
+            </div>
+          </div>
+
+          {/* Bottom Scroll Indicator (Fades out as user scrolls) */}
+          <div 
+            ref={scrollIndicatorRef}
+            className="flex items-center justify-between text-xs tracking-[0.15em] text-[#C98B5B] font-medium"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-8 rounded-full border border-[#C98B5B]/50 flex items-start justify-center p-1">
+                <div className="w-1 h-2 rounded-full bg-[#F2A321] animate-bounce" />
+              </div>
+              <span className="font-['Noto_Sans_Gujarati',sans-serif] text-xs text-[#F7E8CF]/80">
+                અનુભવ માટે સ્ક્રોલ કરો
+              </span>
+            </div>
+            
+            <div className="hidden sm:flex items-center gap-2 text-[11px] text-[#C98B5B]/80 uppercase tracking-widest">
+              <span>01 / ધરોહર</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
