@@ -103,8 +103,12 @@ export default function Hero3DAccents({ isReducedMotion = false }) {
   const [isVisible, setIsVisible] = useState(true);
   const containerRef = useRef(null);
 
-  // Disable on small mobile devices to ensure zero GPU contention with the hero video
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  // Disable completely on mobile and iOS WebKit devices to guarantee 100% video decoder performance
+  const isMobileOrIOS =
+    typeof window !== 'undefined' &&
+    (window.innerWidth < 768 ||
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
 
   // IntersectionObserver to pause rendering when hero is scrolled past
   useEffect(() => {
@@ -122,7 +126,7 @@ export default function Hero3DAccents({ isReducedMotion = false }) {
     return () => observer.disconnect();
   }, []);
 
-  if (isMobile) return null;
+  if (isMobileOrIOS) return null;
 
   return (
     <div

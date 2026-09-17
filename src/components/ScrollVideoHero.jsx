@@ -6,6 +6,15 @@ import Hero3DAccents from './three/Hero3DAccents';
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
+// Helper to detect iOS devices (including iPadOS desktop user-agent via touch detection)
+const isIOSDevice = () => {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
+  return (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  );
+};
+
 export default function ScrollVideoHero() {
   const containerRef = useRef(null);
   const stickyRef = useRef(null);
@@ -14,6 +23,7 @@ export default function ScrollVideoHero() {
   const introTextRef = useRef(null);
   const outroTextRef = useRef(null);
   const scrollIndicatorRef = useRef(null);
+  const [isVideoReady, setIsVideoReady] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(() => {
     if (typeof window !== 'undefined') {
       return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -29,6 +39,80 @@ export default function ScrollVideoHero() {
     return () => mediaQuery.removeEventListener('change', handleMotionPreference);
   }, []);
 
+  // iOS Safari decoder initialization & media readiness management
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // 1. Programmatic properties
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+
+    const isIOS = isIOSDevice();
+
+    // 2. One-time user interaction unlock for iOS WebKit video decoder
+    let isUnlocked = false;
+    const unlockVideo = async () => {
+      if (isUnlocked || !videoRef.current) return;
+      isUnlocked = true;
+
+      const v = videoRef.current;
+      v.muted = true;
+      try {
+        await v.play();
+        v.pause();
+        if (v.currentTime === 0) {
+          v.currentTime = 0.01;
+        }
+      } catch (error) {
+        console.debug('iOS video unlock deferred', error);
+      }
+
+      ['touchstart', 'pointerdown', 'click'].forEach((evt) => {
+        window.removeEventListener(evt, unlockVideo);
+      });
+    };
+
+    ['touchstart', 'pointerdown', 'click'].forEach((evt) => {
+      window.addEventListener(evt, unlockVideo, { passive: true, once: true });
+    });
+
+    // 3. Media readiness checks
+    const checkReadiness = () => {
+      if (video.readyState >= 2 && Number.isFinite(video.duration) && video.duration > 0) {
+        setIsVideoReady(true);
+        if (isIOS) {
+          try {
+            if (video.currentTime === 0) {
+              video.currentTime = 0.01;
+            }
+          } catch {}
+        }
+      }
+    };
+
+    if (video.readyState >= 2) {
+      checkReadiness();
+    }
+
+    video.addEventListener('loadedmetadata', checkReadiness);
+    video.addEventListener('loadeddata', checkReadiness);
+    video.addEventListener('canplay', checkReadiness);
+
+    // Initial preload kick
+    video.load();
+
+    return () => {
+      ['touchstart', 'pointerdown', 'click'].forEach((evt) => {
+        window.removeEventListener(evt, unlockVideo);
+      });
+      video.removeEventListener('loadedmetadata', checkReadiness);
+      video.removeEventListener('loadeddata', checkReadiness);
+      video.removeEventListener('canplay', checkReadiness);
+    };
+  }, []);
+
   useEffect(() => {
     if (isReducedMotion) {
       if (wordmarkRef.current) gsap.set(wordmarkRef.current, { opacity: 1, y: 0 });
@@ -40,6 +124,9 @@ export default function ScrollVideoHero() {
 
     let rafId;
     const targetTime = { value: 0 };
+    const isIOS = isIOSDevice();
+    const threshold = isIOS ? 0.02 : 0.008;
+    const seekFactor = isIOS ? 0.15 : 0.12;
 
     // Create GSAP Context for proper cleanup
     const ctx = gsap.context(() => {
@@ -55,10 +142,16 @@ export default function ScrollVideoHero() {
       // 1. Smooth rAF lerp loop for video scrubbing without overloading currentTime
       const updateVideo = () => {
         const video = videoRef.current;
-        if (video && video.duration) {
+        if (
+          video &&
+          video.duration &&
+          Number.isFinite(video.duration) &&
+          video.readyState >= 2
+        ) {
           const diff = targetTime.value - video.currentTime;
-          if (Math.abs(diff) > 0.008) {
-            video.currentTime += diff * 0.12;
+          // Avoid seeking if Safari is already in the middle of a seek operation
+          if (Math.abs(diff) > threshold && !video.seeking) {
+            video.currentTime += diff * seekFactor;
           }
         }
         rafId = requestAnimationFrame(updateVideo);
@@ -74,7 +167,7 @@ export default function ScrollVideoHero() {
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const video = videoRef.current;
-            if (video && video.duration) {
+            if (video && video.duration && Number.isFinite(video.duration)) {
               targetTime.value = self.progress * video.duration;
             }
           },
@@ -167,23 +260,34 @@ export default function ScrollVideoHero() {
         ref={stickyRef}
         className="sticky top-0 left-0 w-full h-screen h-[100dvh] overflow-hidden flex items-center justify-between"
       >
-        {/* Background Video Layer */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden">
+        {/* Background Media Wrapper */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden bg-[#120B07]">
+          {/* Static Poster Image underneath video (Guarantees zero black rectangle) */}
+          <img
+            src="/assets/vada-pav-poster.jpg"
+            alt="ગરમાગરમ વડાપાઉં"
+            className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+            aria-hidden="true"
+          />
+
+          {/* Video element above poster */}
           <video
             ref={videoRef}
-            src="/assets/vada-pav-scroll-optimized.mp4"
-            poster="/assets/vada-pav-poster.jpg"
-            preload="auto"
-            playsInline
             muted
+            playsInline
+            webkit-playsinline="true"
+            preload="metadata"
+            poster="/assets/vada-pav-poster.jpg"
             aria-hidden="true"
-            className="w-full h-full object-cover object-center md:object-center pointer-events-none will-change-transform"
-          />
-          {/* Background Poster / Fallback */}
-          <div 
-            className="absolute inset-0 bg-[#120B07] -z-10" 
-            aria-hidden="true" 
-          />
+            className={`absolute inset-0 w-full h-full object-cover object-center pointer-events-none transition-opacity duration-500 ease-out will-change-transform ${
+              isVideoReady ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <source
+              src="/assets/vada-pav-scroll-optimized.mp4"
+              type="video/mp4"
+            />
+          </video>
         </div>
 
         {/* Selective 3D Foreground Spice & Chilli Accents */}
