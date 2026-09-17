@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import ExplodedVadaPav3D from './three/ExplodedVadaPav3D';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -156,6 +157,8 @@ export default function IngredientsSection() {
   const lineRef = useRef(null);
   const cardsRef = useRef([]);
 
+  const [scrollProgress, setScrollProgress] = useState(1);
+
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -183,6 +186,17 @@ export default function IngredientsSection() {
         );
         return;
       }
+
+      // Scroll-linked explosion progress (0 = assembled when entering -> 1 = exploded view)
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top 85%',
+        end: 'top 30%',
+        scrub: 0.5,
+        onUpdate: (self) => {
+          setScrollProgress(self.progress);
+        },
+      });
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -357,7 +371,7 @@ export default function IngredientsSection() {
             </p>
           </div>
 
-          {/* Right Column: Exploded Vada Pav Composition Supporting Image */}
+          {/* Right Column: Exploded Vada Pav Composition Supporting 3D Visual */}
           <div
             ref={imageContainerRef}
             className="lg:col-span-5 flex items-center justify-center lg:justify-end will-change-transform"
@@ -367,17 +381,13 @@ export default function IngredientsSection() {
               {/* Inner framing outline */}
               <div className="absolute inset-2.5 rounded-2xl sm:rounded-[1.5rem] border border-[#2A130A]/10 pointer-events-none z-10" />
 
-              {/* Exploded Vada Pav Composition Image with subtle desktop hover */}
-              <img
-                src="/assets/gajanand-ingredients.webp"
-                alt="ગજાનંદ વડાપાઉંની સામગ્રી - પાવ, બટાકા વડો, લીલી ચટણી, લસણ મસાલો અને લીલું મરચું"
-                loading="lazy"
-                decoding="async"
-                className="w-full h-full object-cover object-center rounded-2xl sm:rounded-[1.5rem] img-hover-subtle"
-              />
+              {/* Interactive 3D Exploded Vada Pav Component */}
+              <div className="w-full h-full rounded-2xl sm:rounded-[1.5rem] overflow-hidden">
+                <ExplodedVadaPav3D scrollProgress={scrollProgress} />
+              </div>
 
               {/* Soft Warm Lighting Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#2A130A]/40 via-transparent to-transparent pointer-events-none z-10" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#2A130A]/20 via-transparent to-transparent pointer-events-none z-10" />
 
               {/* Floating Layer Detail Tag */}
               <div className="absolute bottom-4 right-4 z-20 px-3 py-1.5 rounded-full bg-[#2A130A]/85 border border-[#D96814]/30 backdrop-blur-md flex items-center gap-2">

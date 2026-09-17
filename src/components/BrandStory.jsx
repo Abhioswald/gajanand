@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import GujaratHeritage3D from './three/GujaratHeritage3D';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -239,9 +240,12 @@ export default function BrandStory() {
           {/* Right Column: Gujarat Pol Heritage Atmosphere */}
           <div 
             ref={visualRef}
-            className="lg:col-span-5 flex items-center justify-center lg:justify-end will-change-transform mt-8 lg:mt-0"
+            className="lg:col-span-5 relative flex items-center justify-center lg:justify-end will-change-transform mt-8 lg:mt-0"
           >
-            <div className="relative w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[460px] aspect-[4/3] sm:aspect-square lg:aspect-[4/5] rounded-3xl sm:rounded-[2rem] overflow-hidden border border-[#2A130A]/20 bg-[#2A130A]/5 shadow-2xl shadow-[#2A130A]/25 group">
+            {/* 3D Gujarati Sandstone Stepwell / Jharokha Relief Backdrop */}
+            <GujaratHeritage3D />
+
+            <div className="relative z-10 w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[460px] aspect-[4/3] sm:aspect-square lg:aspect-[4/5] rounded-3xl sm:rounded-[2rem] overflow-hidden border border-[#2A130A]/20 bg-[#2A130A]/5 shadow-2xl shadow-[#2A130A]/25 group">
               
               {/* Subtle Pol Jharokha Framing Border & Warm Saffron Corner Accents */}
               <div className="absolute inset-3 rounded-2xl sm:rounded-[1.5rem] border border-[#F7E8CF]/25 pointer-events-none z-10" />

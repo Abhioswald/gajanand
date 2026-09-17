@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import ProductPlate3D from './three/ProductPlate3D';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -293,6 +294,9 @@ export default function OrderCTA() {
           >
             <div className="relative w-full max-w-[440px] sm:max-w-[480px] lg:max-w-[540px] aspect-square rounded-3xl overflow-hidden flex items-center justify-center p-6 border border-[#F7E8CF]/10 bg-gradient-to-b from-[#2A130A]/40 to-[#120B07]/80 shadow-2xl shadow-black/90">
               
+              {/* Selective 3D Earthen Brass Plate & Soft Shadow Pedestal */}
+              <ProductPlate3D />
+
               {/* Background Circular Thali / Sandstone Platter Glow */}
               <div className="absolute inset-8 rounded-full border border-[#D96814]/20 bg-gradient-to-tr from-[#120B07] via-[#2A130A]/50 to-[#D96814]/10 pointer-events-none" />
               
