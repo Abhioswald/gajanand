@@ -6,6 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function BrandStory() {
   const sectionRef = useRef(null);
+  const topTransitionRef = useRef(null);
   const contentRef = useRef(null);
   const eyebrowRef = useRef(null);
   const headingRef = useRef(null);
@@ -24,13 +25,24 @@ export default function BrandStory() {
     const ctx = gsap.context(() => {
       if (prefersReducedMotion) {
         // Immediate reveal for reduced motion
-        gsap.set([eyebrowRef.current, headingRef.current, paragraphRef.current, secondaryRef.current, visualRef.current, imageRef.current], {
-          opacity: 1,
-          y: 0,
-          x: 0,
-          scale: 1,
-          clipPath: 'inset(0% 0% 0% 0%)',
-        });
+        gsap.set(
+          [
+            topTransitionRef.current,
+            eyebrowRef.current,
+            headingRef.current,
+            paragraphRef.current,
+            secondaryRef.current,
+            visualRef.current,
+            imageRef.current,
+          ],
+          {
+            opacity: 1,
+            y: 0,
+            x: 0,
+            scale: 1,
+            clipPath: 'inset(0% 0% 0% 0%)',
+          }
+        );
         return;
       }
 
@@ -44,72 +56,82 @@ export default function BrandStory() {
         },
       });
 
-      // 1. Eyebrow fade & rise
-      if (eyebrowRef.current) {
+      // 0. Curved transition gently rises
+      if (topTransitionRef.current) {
         tl.fromTo(
-          eyebrowRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+          topTransitionRef.current,
+          { y: 15, opacity: 0.85 },
+          { y: 0, opacity: 1, duration: 0.85, ease: 'power2.out' },
           0
         );
       }
 
-      // 2. Heading fades upward with cinematic deceleration
+      // 1. Eyebrow appears first
+      if (eyebrowRef.current) {
+        tl.fromTo(
+          eyebrowRef.current,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
+          0.05
+        );
+      }
+
+      // 2. Heading follows
       if (headingRef.current) {
         tl.fromTo(
           headingRef.current,
-          { opacity: 0, y: 45 },
-          { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out' },
-          0.12
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' },
+          0.14
         );
       }
 
-      // 3. Supporting paragraph follows naturally
+      // 3. Supporting paragraph follows 120ms later
       if (paragraphRef.current) {
         tl.fromTo(
           paragraphRef.current,
-          { opacity: 0, y: 35 },
-          { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out' },
-          0.28
+          { opacity: 0, y: 22 },
+          { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
+          0.26
         );
       }
 
-      // 4. Secondary tagline & accent line
+      // 4. Secondary tagline & accent line last
       if (secondaryRef.current) {
         tl.fromTo(
           secondaryRef.current,
-          { opacity: 0, y: 25 },
-          { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' },
-          0.44
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
+          0.38
         );
       }
 
-      // 5. Gujarat heritage image reveals from right using a clipped mask, x: 40 -> 0, opacity: 0 -> 1, scale: 1.05 -> 1
+      // 5. Gujarat heritage image reveals from right using clipped mask (x: 24 -> 0, scale: 1.04 -> 1)
       if (visualRef.current) {
         tl.fromTo(
           visualRef.current,
           { 
             opacity: 0, 
-            x: 40,
+            x: 24,
             clipPath: 'inset(0% 0% 0% 100%)' 
           },
           { 
             opacity: 1, 
             x: 0, 
             clipPath: 'inset(0% 0% 0% 0%)',
-            duration: 1.35, 
+            duration: 1.25, 
             ease: 'power3.out' 
           },
-          0.2
+          0.18
         );
       }
 
       if (imageRef.current) {
         tl.fromTo(
           imageRef.current,
-          { scale: 1.05 },
-          { scale: 1, duration: 1.35, ease: 'power3.out' },
-          0.2
+          { scale: 1.04 },
+          { scale: 1, duration: 1.25, ease: 'power3.out' },
+          0.18
         );
       }
     }, sectionRef);
@@ -128,7 +150,8 @@ export default function BrandStory() {
     >
       {/* Top Cinematic Transition from Dark Hero (#120B07) into Warm Saffron Canvas */}
       <div 
-        className="absolute top-0 left-0 w-full overflow-hidden leading-none pointer-events-none z-10 -translate-y-[1px]"
+        ref={topTransitionRef}
+        className="absolute top-0 left-0 w-full overflow-hidden leading-none pointer-events-none z-10 -translate-y-[1px] will-change-transform"
         aria-hidden="true"
       >
         <svg
@@ -218,23 +241,23 @@ export default function BrandStory() {
             ref={visualRef}
             className="lg:col-span-5 flex items-center justify-center lg:justify-end will-change-transform mt-8 lg:mt-0"
           >
-            <div className="relative w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[460px] aspect-[4/3] sm:aspect-square lg:aspect-[4/5] rounded-3xl sm:rounded-[2rem] overflow-hidden border border-[#2A130A]/20 bg-[#2A130A]/5 shadow-2xl shadow-[#2A130A]/25">
+            <div className="relative w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[460px] aspect-[4/3] sm:aspect-square lg:aspect-[4/5] rounded-3xl sm:rounded-[2rem] overflow-hidden border border-[#2A130A]/20 bg-[#2A130A]/5 shadow-2xl shadow-[#2A130A]/25 group">
               
               {/* Subtle Pol Jharokha Framing Border & Warm Saffron Corner Accents */}
               <div className="absolute inset-3 rounded-2xl sm:rounded-[1.5rem] border border-[#F7E8CF]/25 pointer-events-none z-10" />
 
-              {/* Heritage WebP Image */}
+              {/* Heritage WebP Image with subtle desktop hover */}
               <img
                 ref={imageRef}
                 src="/assets/gajanand-heritage.webp"
                 alt="ગુજરાત અમદાવાદ પોળ સ્થાપત્ય અને ધરોહર"
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover object-center will-change-transform"
+                className="w-full h-full object-cover object-center will-change-transform img-hover-subtle"
               />
 
               {/* Cinematic Warm Golden Hour Gradient Overlays */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#2A130A]/80 via-[#2A130A]/10 to-transparent pointer-events-none z-10" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#2A130A]/80 via-[#2A130A]/10 to-transparent pointer-events-none z-10 transition-opacity duration-300 group-hover:opacity-90" />
               <div className="absolute inset-0 bg-[#D96814]/10 mix-blend-color pointer-events-none z-10" />
 
               {/* Authentic Heritage Descriptor Badge */}

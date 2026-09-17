@@ -6,6 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function OrderCTA() {
   const sectionRef = useRef(null);
+  const topTransitionRef = useRef(null);
   const eyebrowRef = useRef(null);
   const headingRef = useRef(null);
   const paragraphRef = useRef(null);
@@ -26,6 +27,7 @@ export default function OrderCTA() {
       if (prefersReducedMotion) {
         gsap.set(
           [
+            topTransitionRef.current,
             eyebrowRef.current,
             headingRef.current,
             paragraphRef.current,
@@ -47,13 +49,23 @@ export default function OrderCTA() {
         },
       });
 
+      // 0. Curved transition gently settles
+      if (topTransitionRef.current) {
+        tl.fromTo(
+          topTransitionRef.current,
+          { y: 15, opacity: 0.85 },
+          { y: 0, opacity: 1, duration: 0.85, ease: 'power2.out' },
+          0
+        );
+      }
+
       // 1. Eyebrow fade & lift
       if (eyebrowRef.current) {
         tl.fromTo(
           eyebrowRef.current,
-          { opacity: 0, y: 20 },
+          { opacity: 0, y: 16 },
           { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
-          0
+          0.05
         );
       }
 
@@ -61,9 +73,9 @@ export default function OrderCTA() {
       if (headingRef.current) {
         tl.fromTo(
           headingRef.current,
-          { opacity: 0, y: 35 },
-          { opacity: 1, y: 0, duration: 0.95, ease: 'power3.out' },
-          0.1
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
+          0.12
         );
       }
 
@@ -71,8 +83,8 @@ export default function OrderCTA() {
       if (paragraphRef.current) {
         tl.fromTo(
           paragraphRef.current,
-          { opacity: 0, y: 25 },
-          { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' },
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
           0.22
         );
       }
@@ -81,9 +93,9 @@ export default function OrderCTA() {
       if (buttonsRef.current) {
         tl.fromTo(
           buttonsRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
-          0.34
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+          0.32
         );
       }
 
@@ -91,18 +103,18 @@ export default function OrderCTA() {
       if (badgeRef.current) {
         tl.fromTo(
           badgeRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
-          0.44
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
+          0.40
         );
       }
 
-      // 6. Food product presentation scales in gently with upward shift (scale 0.94 -> 1, y: 30 -> 0, opacity: 0 -> 1)
+      // 6. Food product presentation scales in gently with upward shift (scale 0.95 -> 1, y: 24 -> 0, opacity: 0 -> 1)
       if (imageContainerRef.current) {
         tl.fromTo(
           imageContainerRef.current,
-          { opacity: 0, y: 30, scale: 0.94 },
-          { opacity: 1, y: 0, scale: 1, duration: 1.15, ease: 'power3.out' },
+          { opacity: 0, y: 24, scale: 0.95 },
+          { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'power3.out' },
           0.2
         );
       }
@@ -110,11 +122,11 @@ export default function OrderCTA() {
       // 7. Subtle ambient steam opacity & drift loop
       if (steamRef.current) {
         gsap.to(steamRef.current, {
-          y: -10,
-          opacity: 0.7,
+          y: -8,
+          opacity: 0.65,
           repeat: -1,
           yoyo: true,
-          duration: 2.6,
+          duration: 2.8,
           ease: 'sine.inOut',
         });
       }
@@ -142,7 +154,8 @@ export default function OrderCTA() {
     >
       {/* Top Transition from Cream Section (#F7E8CF) into Dark Canvas (#120B07) */}
       <div
-        className="absolute top-0 left-0 w-full overflow-hidden leading-none pointer-events-none z-10 -translate-y-[1px]"
+        ref={topTransitionRef}
+        className="absolute top-0 left-0 w-full overflow-hidden leading-none pointer-events-none z-10 -translate-y-[1px] will-change-transform"
         aria-hidden="true"
       >
         <svg
@@ -220,12 +233,12 @@ export default function OrderCTA() {
               <button
                 id="cta-order-btn"
                 onClick={scrollToLocations}
-                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#D96814] text-[#120B07] font-['Noto_Sans_Gujarati',sans-serif] font-bold text-base sm:text-lg tracking-wide transition-all duration-200 hover:bg-[#E98224] hover:shadow-[0_0_25px_rgba(217,104,20,0.5)] hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2A321] focus-visible:ring-offset-2 focus-visible:ring-offset-[#120B07] cursor-pointer"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#D96814] text-[#120B07] font-['Noto_Sans_Gujarati',sans-serif] font-bold text-base sm:text-lg tracking-wide transition-all duration-[170ms] ease-out hover:bg-[#E98224] hover:shadow-[0_0_25px_rgba(217,104,20,0.5)] hover:-translate-y-[2px] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2A321] focus-visible:ring-offset-2 focus-visible:ring-offset-[#120B07] cursor-pointer"
                 aria-label="ઓર્ડર કરો"
               >
                 <span>ઓર્ડર કરો</span>
                 <svg
-                  className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
+                  className="w-4 h-4 transition-transform duration-[170ms] ease-out group-hover:translate-x-1"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -240,7 +253,7 @@ export default function OrderCTA() {
               <button
                 id="cta-store-locator-btn"
                 onClick={scrollToLocations}
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border border-[#F7E8CF]/40 text-[#F7E8CF] font-['Noto_Sans_Gujarati',sans-serif] font-medium text-base sm:text-lg tracking-wide transition-all duration-200 hover:bg-[#F7E8CF]/10 hover:border-[#F7E8CF] hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2A321] focus-visible:ring-offset-2 focus-visible:ring-offset-[#120B07] cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border border-[#F7E8CF]/40 text-[#F7E8CF] font-['Noto_Sans_Gujarati',sans-serif] font-medium text-base sm:text-lg tracking-wide transition-all duration-[170ms] ease-out hover:border-[#D96814] hover:text-[#F2A321] hover:bg-[#D96814]/10 hover:-translate-y-[2px] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2A321] focus-visible:ring-offset-2 focus-visible:ring-offset-[#120B07] cursor-pointer"
                 aria-label="નજીકનું સ્ટોર શોધો"
               >
                 <svg

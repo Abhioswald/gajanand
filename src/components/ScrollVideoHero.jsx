@@ -9,6 +9,7 @@ export default function ScrollVideoHero() {
   const containerRef = useRef(null);
   const stickyRef = useRef(null);
   const videoRef = useRef(null);
+  const wordmarkRef = useRef(null);
   const introTextRef = useRef(null);
   const outroTextRef = useRef(null);
   const scrollIndicatorRef = useRef(null);
@@ -27,129 +28,115 @@ export default function ScrollVideoHero() {
     return () => mediaQuery.removeEventListener('change', handleMotionPreference);
   }, []);
 
-
   useEffect(() => {
     if (isReducedMotion) {
-      // In reduced motion mode, do not setup scroll scrubbing
+      if (wordmarkRef.current) gsap.set(wordmarkRef.current, { opacity: 1, y: 0 });
       return;
     }
 
-    const video = videoRef.current;
     const container = containerRef.current;
     if (!container) return;
 
+    let rafId;
+    const targetTime = { value: 0 };
+
     // Create GSAP Context for proper cleanup
     const ctx = gsap.context(() => {
-      const initScrollAnimation = () => {
-        const duration = video && video.duration && !isNaN(video.duration) && video.duration > 0
-          ? video.duration
-          : 5; // Safe fallback duration if metadata is loading
+      // Initial Wordmark Soft Entrance
+      if (wordmarkRef.current) {
+        gsap.fromTo(
+          wordmarkRef.current,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.1 }
+        );
+      }
 
-        // Main scrub timeline linked to the 400vh section scroll
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: container,
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: 1.2, // Smooth lerp for buttery seek responsiveness without stutter
-            invalidateOnRefresh: true,
-          },
-        });
-
-        // 1. Scroll-driven video currentTime mapping
-        if (video) {
-          // Pause video explicitly to ensure strict scroll control
-          video.pause();
-
-          tl.fromTo(
-            video,
-            { currentTime: 0 },
-            {
-              currentTime: duration,
-              ease: 'none',
-              duration: 1,
-            },
-            0
-          );
+      // 1. Smooth rAF lerp loop for video scrubbing without overloading currentTime
+      const updateVideo = () => {
+        const video = videoRef.current;
+        if (video && video.duration) {
+          const diff = targetTime.value - video.currentTime;
+          if (Math.abs(diff) > 0.008) {
+            video.currentTime += diff * 0.12;
+          }
         }
-
-        // 2. Initial Hero Content Animation (fades out completely by ~38-42% scroll)
-        if (introTextRef.current) {
-          tl.to(
-            introTextRef.current,
-            {
-              opacity: 0,
-              y: -30,
-              filter: 'blur(4px)',
-              ease: 'power2.inOut',
-              duration: 0.38,
-            },
-            0
-          );
-        }
-
-        // 3. Scroll indicator fades out rapidly near top (0 to 12% scroll)
-        if (scrollIndicatorRef.current) {
-          tl.to(
-            scrollIndicatorRef.current,
-            {
-              opacity: 0,
-              y: 15,
-              ease: 'power1.out',
-              duration: 0.12,
-            },
-            0
-          );
-        }
-
-        // 4. Final Label Reveal (emerges around 72% to 95% scroll)
-        if (outroTextRef.current) {
-          tl.fromTo(
-            outroTextRef.current,
-            {
-              opacity: 0,
-              y: 35,
-              scale: 0.96,
-            },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              ease: 'power3.out',
-              duration: 0.22,
-            },
-            0.72
-          );
-        }
+        rafId = requestAnimationFrame(updateVideo);
       };
 
-      if (video) {
-        if (video.readyState >= 1) {
-          // Metadata already loaded
-          initScrollAnimation();
-        } else {
-          // Wait for metadata loaded
-          const onLoadedMetadata = () => {
-            initScrollAnimation();
-          };
-          video.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
-          
-          // Safety timeout in case video source takes time or is placeholder
-          const fallbackTimer = setTimeout(() => {
-            initScrollAnimation();
-          }, 300);
+      // 2. Main scrub timeline linked to container scroll
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: true,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const video = videoRef.current;
+            if (video && video.duration) {
+              targetTime.value = self.progress * video.duration;
+            }
+          },
+        },
+      });
 
-          return () => {
-            video.removeEventListener('loadedmetadata', onLoadedMetadata);
-            clearTimeout(fallbackTimer);
-          };
-        }
-      } else {
-        initScrollAnimation();
+      // 3. Initial Hero Content Animation (fades out completely by ~38% scroll)
+      if (introTextRef.current) {
+        tl.to(
+          introTextRef.current,
+          {
+            opacity: 0,
+            y: -30,
+            filter: 'blur(4px)',
+            ease: 'power2.inOut',
+            duration: 0.38,
+          },
+          0
+        );
       }
+
+      // 4. Scroll indicator fades out rapidly near top (0 to 12% scroll)
+      if (scrollIndicatorRef.current) {
+        tl.to(
+          scrollIndicatorRef.current,
+          {
+            opacity: 0,
+            y: 15,
+            ease: 'power1.out',
+            duration: 0.12,
+          },
+          0
+        );
+      }
+
+      // 5. Final Label Reveal (emerges around 72% to 95% scroll)
+      if (outroTextRef.current) {
+        tl.fromTo(
+          outroTextRef.current,
+          {
+            opacity: 0,
+            y: 35,
+            scale: 0.96,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            ease: 'power3.out',
+            duration: 0.22,
+          },
+          0.72
+        );
+      }
+
+      // Start the smoothed frame loop
+      updateVideo();
     }, containerRef);
 
     return () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
       ctx.revert(); // Clean up all GSAP timelines and ScrollTriggers
     };
   }, [isReducedMotion]);
@@ -168,7 +155,6 @@ export default function ScrollVideoHero() {
     }
   };
 
-
   return (
     <section
       ref={containerRef}
@@ -178,15 +164,15 @@ export default function ScrollVideoHero() {
       {/* Pinned Sticky 100vh Hero Viewport */}
       <div
         ref={stickyRef}
-        className="sticky top-0 left-0 w-full h-[100dvh] h-screen overflow-hidden flex items-center justify-between"
+        className="sticky top-0 left-0 w-full h-screen h-[100dvh] overflow-hidden flex items-center justify-between"
       >
         {/* Background Video Layer */}
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <video
             ref={videoRef}
-            src="/assets/vada-pav-scroll.mp4"
+            src="/assets/vada-pav-scroll-optimized.mp4"
             poster="/assets/vada-pav-poster.jpg"
-            preload="metadata"
+            preload="auto"
             playsInline
             muted
             aria-hidden="true"
@@ -214,7 +200,7 @@ export default function ScrollVideoHero() {
           
           {/* Top Bar / Brand Wordmark Badge */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3.5">
+            <div ref={wordmarkRef} className="flex items-center gap-3.5 will-change-transform">
               <span className="w-2.5 h-2.5 rounded-full bg-[#D96814] shadow-[0_0_12px_#D96814] animate-pulse" />
               <div className="flex flex-col">
                 <span className="font-['Noto_Serif_Gujarati',serif] text-lg sm:text-xl font-bold tracking-wide text-[#F7E8CF] leading-tight">
@@ -268,15 +254,15 @@ export default function ScrollVideoHero() {
               <button
                 id="hero-cta-btn"
                 onClick={handleCtaClick}
-                className="group relative inline-flex items-center gap-3 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#D96814] to-[#E98224] text-white font-medium text-sm sm:text-base tracking-wide transition-all duration-300 hover:shadow-[0_0_25px_rgba(217,104,20,0.55)] hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2A321] focus-visible:ring-offset-2 focus-visible:ring-offset-[#120B07] cursor-pointer"
+                className="group relative inline-flex items-center gap-3 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#D96814] to-[#E98224] text-white font-medium text-sm sm:text-base tracking-wide transition-all duration-[170ms] ease-out hover:shadow-[0_0_25px_rgba(217,104,20,0.55)] hover:-translate-y-[2px] hover:brightness-110 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2A321] focus-visible:ring-offset-2 focus-visible:ring-offset-[#120B07] cursor-pointer"
                 aria-label="અમારી કહાની જુઓ"
               >
                 <span className="font-['Noto_Sans_Gujarati',sans-serif] font-medium">અમારી કહાની જુઓ</span>
                 <svg 
-                  className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 text-[#F7E8CF]" 
+                  className="w-4 h-4 transition-transform duration-[170ms] ease-out group-hover:translate-x-1.5 text-[#F7E8CF]" 
                   fill="none" 
                   viewBox="0 0 24 24" 
-                  stroke="currentColor"
+                  stroke="currentColor" 
                   aria-hidden="true"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -306,7 +292,7 @@ export default function ScrollVideoHero() {
           >
             <div className="flex items-center gap-3">
               <div className="w-5 h-8 rounded-full border border-[#C98B5B]/50 flex items-start justify-center p-1">
-                <div className="w-1 h-2 rounded-full bg-[#F2A321] animate-bounce" />
+                <div className="w-1.5 h-2 rounded-full bg-[#F2A321] animate-scroll-bob" />
               </div>
               <span className="font-['Noto_Sans_Gujarati',sans-serif] text-xs text-[#F7E8CF]/80">
                 અનુભવ માટે સ્ક્રોલ કરો

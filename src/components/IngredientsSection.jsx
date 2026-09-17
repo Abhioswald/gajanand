@@ -148,6 +148,7 @@ const INGREDIENTS = [
 
 export default function IngredientsSection() {
   const sectionRef = useRef(null);
+  const topTransitionRef = useRef(null);
   const eyebrowRef = useRef(null);
   const headingRef = useRef(null);
   const paragraphRef = useRef(null);
@@ -163,11 +164,23 @@ export default function IngredientsSection() {
 
     const ctx = gsap.context(() => {
       if (prefersReducedMotion) {
-        gsap.set([eyebrowRef.current, headingRef.current, paragraphRef.current, imageContainerRef.current, lineRef.current, ...cardsRef.current], {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-        });
+        gsap.set(
+          [
+            topTransitionRef.current,
+            eyebrowRef.current,
+            headingRef.current,
+            paragraphRef.current,
+            imageContainerRef.current,
+            lineRef.current,
+            ...cardsRef.current,
+          ],
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            scaleX: 1,
+          }
+        );
         return;
       }
 
@@ -180,13 +193,23 @@ export default function IngredientsSection() {
         },
       });
 
+      // 0. Top curved transition gently settles into view
+      if (topTransitionRef.current) {
+        tl.fromTo(
+          topTransitionRef.current,
+          { y: 15, opacity: 0.85 },
+          { y: 0, opacity: 1, duration: 0.85, ease: 'power2.out' },
+          0
+        );
+      }
+
       // 1. Eyebrow fade & lift
       if (eyebrowRef.current) {
         tl.fromTo(
           eyebrowRef.current,
-          { opacity: 0, y: 18 },
+          { opacity: 0, y: 16 },
           { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
-          0
+          0.05
         );
       }
 
@@ -194,9 +217,9 @@ export default function IngredientsSection() {
       if (headingRef.current) {
         tl.fromTo(
           headingRef.current,
-          { opacity: 0, y: 35 },
-          { opacity: 1, y: 0, duration: 0.95, ease: 'power3.out' },
-          0.1
+          { opacity: 0, y: 28 },
+          { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
+          0.12
         );
       }
 
@@ -204,19 +227,19 @@ export default function IngredientsSection() {
       if (paragraphRef.current) {
         tl.fromTo(
           paragraphRef.current,
-          { opacity: 0, y: 25 },
-          { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' },
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
           0.22
         );
       }
 
-      // 4. Central exploded ingredients image gently rises into view: scale 0.96 -> 1, y: 30 -> 0, opacity: 0 -> 1
+      // 4. Central exploded ingredients image gently rises into view: scale 0.96 -> 1, y: 20 -> 0, opacity: 0 -> 1
       if (imageContainerRef.current) {
         tl.fromTo(
           imageContainerRef.current,
-          { opacity: 0, y: 30, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'power3.out' },
-          0.28
+          { opacity: 0, y: 20, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: 'power3.out' },
+          0.25
         );
       }
 
@@ -225,8 +248,8 @@ export default function IngredientsSection() {
         tl.fromTo(
           lineRef.current,
           { scaleX: 0, transformOrigin: 'left center' },
-          { scaleX: 1, duration: 1.1, ease: 'power2.out' },
-          0.38
+          { scaleX: 1, duration: 1.0, ease: 'power2.out' },
+          0.34
         );
       }
 
@@ -234,16 +257,16 @@ export default function IngredientsSection() {
       if (cardsRef.current.length > 0) {
         tl.fromTo(
           cardsRef.current,
-          { opacity: 0, y: 30, scale: 0.96 },
+          { opacity: 0, y: 20, scale: 0.96 },
           {
             opacity: 1,
             y: 0,
             scale: 1,
-            duration: 0.85,
+            duration: 0.75,
             stagger: 0.08,
             ease: 'power3.out',
           },
-          0.45
+          0.40
         );
       }
     }, sectionRef);
@@ -262,7 +285,8 @@ export default function IngredientsSection() {
     >
       {/* Top Saffron Flow Transition from BrandStory (#D96814) into Cream Canvas (#F7E8CF) */}
       <div
-        className="absolute top-0 left-0 w-full overflow-hidden leading-none pointer-events-none z-10 -translate-y-[1px]"
+        ref={topTransitionRef}
+        className="absolute top-0 left-0 w-full overflow-hidden leading-none pointer-events-none z-10 -translate-y-[1px] will-change-transform"
         aria-hidden="true"
       >
         <svg
@@ -338,18 +362,18 @@ export default function IngredientsSection() {
             ref={imageContainerRef}
             className="lg:col-span-5 flex items-center justify-center lg:justify-end will-change-transform"
           >
-            <div className="relative w-full max-w-[420px] lg:max-w-none aspect-[16/10] sm:aspect-[16/9] lg:aspect-[4/3] rounded-3xl sm:rounded-[2rem] overflow-hidden border border-[#2A130A]/15 bg-gradient-to-br from-[#F7E8CF] via-[#F0DDC0] to-[#E5CCA8] shadow-xl shadow-[#2A130A]/10 p-2">
+            <div className="relative w-full max-w-[420px] lg:max-w-none aspect-[16/10] sm:aspect-[16/9] lg:aspect-[4/3] rounded-3xl sm:rounded-[2rem] overflow-hidden border border-[#2A130A]/15 bg-gradient-to-br from-[#F7E8CF] via-[#F0DDC0] to-[#E5CCA8] shadow-xl shadow-[#2A130A]/10 p-2 group">
               
               {/* Inner framing outline */}
               <div className="absolute inset-2.5 rounded-2xl sm:rounded-[1.5rem] border border-[#2A130A]/10 pointer-events-none z-10" />
 
-              {/* Exploded Vada Pav Composition Image */}
+              {/* Exploded Vada Pav Composition Image with subtle desktop hover */}
               <img
                 src="/assets/gajanand-ingredients.webp"
                 alt="ગજાનંદ વડાપાઉંની સામગ્રી - પાવ, બટાકા વડો, લીલી ચટણી, લસણ મસાલો અને લીલું મરચું"
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover object-center rounded-2xl sm:rounded-[1.5rem]"
+                className="w-full h-full object-cover object-center rounded-2xl sm:rounded-[1.5rem] img-hover-subtle"
               />
 
               {/* Soft Warm Lighting Gradient Overlay */}
@@ -382,12 +406,12 @@ export default function IngredientsSection() {
               ref={(el) => {
                 if (el) cardsRef.current[index] = el;
               }}
-              className="group relative flex flex-col justify-between pt-2 pb-6 lg:pb-2 border-b lg:border-b-0 border-[#2A130A]/15 last:border-b-0 will-change-transform"
+              className="group relative flex flex-col justify-between pt-2 pb-6 lg:pb-2 border-b lg:border-b-0 border-[#2A130A]/15 last:border-b-0 will-change-transform cursor-default"
             >
               {/* Top Row: Index Badge & Gujarati Subtitle */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="font-['Syne',sans-serif] text-xs font-extrabold tracking-widest text-[#2A130A]/50 group-hover:text-[#D96814] transition-colors duration-200">
+                  <span className="font-['Syne',sans-serif] text-xs font-extrabold tracking-widest text-[#2A130A]/50 group-hover:text-[#D96814] transition-colors duration-[170ms]">
                     {item.num}
                   </span>
                   <span className="font-sans text-[10px] tracking-wider font-semibold text-[#C98B5B] uppercase opacity-75">
@@ -396,27 +420,27 @@ export default function IngredientsSection() {
                 </div>
 
                 {/* Minimalist SVG Illustration Container */}
-                <div className="mb-5 flex items-center justify-start text-[#2A130A]/85 group-hover:text-[#D96814] transition-colors duration-200">
-                  <div className="p-2 rounded-xl bg-[#2A130A]/[0.03] border border-[#2A130A]/10 group-hover:border-[#D96814]/30 transition-colors duration-200">
-                    <div className="group-hover:-translate-y-1 transition-transform duration-200 ease-out">
+                <div className="mb-5 flex items-center justify-start text-[#2A130A]/85 group-hover:text-[#D96814] transition-colors duration-[170ms]">
+                  <div className="p-2 rounded-xl bg-[#2A130A]/[0.03] border border-[#2A130A]/10 group-hover:border-[#D96814]/30 transition-colors duration-[170ms]">
+                    <div className="group-hover:-translate-y-1 transition-transform duration-[170ms] ease-out">
                       {item.icon}
                     </div>
                   </div>
                 </div>
 
                 {/* Gujarati Ingredient Name */}
-                <h3 className="font-['Noto_Serif_Gujarati',serif] font-bold text-xl sm:text-2xl text-[#1A0A04] group-hover:text-[#D96814] transition-colors duration-200 mb-2 leading-snug">
+                <h3 className="font-['Noto_Serif_Gujarati',serif] font-bold text-xl sm:text-2xl text-[#1A0A04] group-hover:text-[#D96814] transition-colors duration-[170ms] mb-2 leading-snug">
                   {item.name}
                 </h3>
 
                 {/* One-Line Description */}
-                <p className="font-['Noto_Sans_Gujarati',sans-serif] text-sm sm:text-base text-[#2A130A]/80 font-normal leading-relaxed">
+                <p className="font-['Noto_Sans_Gujarati',sans-serif] text-sm sm:text-base text-[#2A130A]/75 group-hover:text-[#2A130A] font-normal leading-relaxed transition-colors duration-[170ms]">
                   {item.desc}
                 </p>
               </div>
 
               {/* Bottom Subtle Accent Indicator on Hover */}
-              <div className="mt-5 w-8 h-[2px] bg-[#2A130A]/15 group-hover:bg-[#D96814] group-hover:w-12 transition-all duration-200" />
+              <div className="mt-5 w-8 h-[2px] bg-[#2A130A]/15 group-hover:bg-[#D96814] group-hover:w-14 transition-all duration-[170ms] ease-out" />
             </div>
           ))}
         </div>

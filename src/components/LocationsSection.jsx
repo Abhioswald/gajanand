@@ -6,15 +6,18 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function LocationsSection() {
   const sectionRef = useRef(null);
+  const topTransitionRef = useRef(null);
   const eyebrowRef = useRef(null);
   const headingRef = useRef(null);
   const paragraphRef = useRef(null);
   const buttonsRef = useRef(null);
   const mapContainerRef = useRef(null);
   const lifestyleImageRef = useRef(null);
+  const mapOutlineRef = useRef(null);
   const anandMarkerRef = useRef(null);
   const petladMarkerRef = useRef(null);
   const connectPathRef = useRef(null);
+  const chipsRef = useRef(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -26,36 +29,53 @@ export default function LocationsSection() {
       if (prefersReducedMotion) {
         gsap.set(
           [
+            topTransitionRef.current,
             eyebrowRef.current,
             headingRef.current,
             paragraphRef.current,
             buttonsRef.current,
             mapContainerRef.current,
             lifestyleImageRef.current,
+            mapOutlineRef.current,
             anandMarkerRef.current,
             petladMarkerRef.current,
+            connectPathRef.current,
+            chipsRef.current,
           ],
           { opacity: 1, y: 0, x: 0, scale: 1 }
         );
         return;
       }
 
+      const isMobile = window.innerWidth < 768;
+      const yDist = isMobile ? 14 : 20;
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: 'top 70%',
+          start: 'top 75%',
           end: 'bottom 20%',
           toggleActions: 'play none none reverse',
         },
       });
 
+      // Top curved transition gently enters
+      if (topTransitionRef.current) {
+        tl.fromTo(
+          topTransitionRef.current,
+          { y: 15, opacity: 0.85 },
+          { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' },
+          0
+        );
+      }
+
       // 1. Eyebrow
       if (eyebrowRef.current) {
         tl.fromTo(
           eyebrowRef.current,
-          { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
-          0
+          { opacity: 0, y: yDist * 0.75 },
+          { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' },
+          0.05
         );
       }
 
@@ -63,9 +83,9 @@ export default function LocationsSection() {
       if (headingRef.current) {
         tl.fromTo(
           headingRef.current,
-          { opacity: 0, y: 35 },
-          { opacity: 1, y: 0, duration: 0.95, ease: 'power3.out' },
-          0.1
+          { opacity: 0, y: yDist * 1.2 },
+          { opacity: 1, y: 0, duration: 0.85, ease: 'power2.out' },
+          0.12
         );
       }
 
@@ -73,8 +93,8 @@ export default function LocationsSection() {
       if (paragraphRef.current) {
         tl.fromTo(
           paragraphRef.current,
-          { opacity: 0, y: 25 },
-          { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' },
+          { opacity: 0, y: yDist },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
           0.22
         );
       }
@@ -83,51 +103,63 @@ export default function LocationsSection() {
       if (buttonsRef.current) {
         tl.fromTo(
           buttonsRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
-          0.34
+          { opacity: 0, y: yDist * 0.8 },
+          { opacity: 1, y: 0, duration: 0.75, ease: 'power2.out' },
+          0.3
         );
       }
 
-      // 5. Gujarat Map Artwork Container & Regional Lifestyle Image (x: 30 -> 0, opacity: 0 -> 1)
+      // 5. Chips
+      if (chipsRef.current) {
+        tl.fromTo(
+          chipsRef.current,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' },
+          0.38
+        );
+      }
+
+      // 6. Map Container (subtle fade & slide)
       if (mapContainerRef.current) {
         tl.fromTo(
           mapContainerRef.current,
-          { opacity: 0, x: 30 },
-          { opacity: 1, x: 0, duration: 1.1, ease: 'power3.out' },
-          0.2
+          { opacity: 0, x: isMobile ? 12 : 24 },
+          { opacity: 1, x: 0, duration: 0.9, ease: 'power2.out' },
+          0.15
         );
       }
 
-      if (lifestyleImageRef.current) {
+      // 7. Gujarat Outline fade in
+      if (mapOutlineRef.current) {
         tl.fromTo(
-          lifestyleImageRef.current,
-          { opacity: 0, x: 30, scale: 1.04 },
-          { opacity: 1, x: 0, scale: 1, duration: 1.25, ease: 'power3.out' },
-          0.2
+          mapOutlineRef.current,
+          { opacity: 0 },
+          { opacity: 0.45, duration: 0.8, ease: 'power2.out' },
+          0.25
         );
       }
 
-      // 6. Primary Anand & Petlad Saffron Markers scale & reveal
+      // 8. Primary Anand Pin (scale 0.92 -> 1 only once, no bounce)
       if (anandMarkerRef.current) {
         tl.fromTo(
           anandMarkerRef.current,
-          { opacity: 0, scale: 0.8 },
-          { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(1.6)' },
-          0.4
+          { opacity: 0, scale: 0.92 },
+          { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' },
+          0.35
         );
       }
 
+      // 9. Petlad Pin follows (scale 0.92 -> 1 only once)
       if (petladMarkerRef.current) {
         tl.fromTo(
           petladMarkerRef.current,
-          { opacity: 0, scale: 0.8 },
-          { opacity: 1, scale: 1, duration: 0.85, ease: 'back.out(1.6)' },
-          0.5
+          { opacity: 0, scale: 0.92 },
+          { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' },
+          0.45
         );
       }
 
-      // 7. Route connection stroke reveal between Anand & Petlad and network
+      // 10. Route line draws softly between them
       if (connectPathRef.current) {
         const length = connectPathRef.current.getTotalLength ? connectPathRef.current.getTotalLength() : 350;
         gsap.set(connectPathRef.current, {
@@ -138,10 +170,10 @@ export default function LocationsSection() {
           connectPathRef.current,
           {
             strokeDashoffset: 0,
-            duration: 1.3,
+            duration: 0.9,
             ease: 'power2.out',
           },
-          0.35
+          0.52
         );
       }
     }, sectionRef);
@@ -167,7 +199,8 @@ export default function LocationsSection() {
     >
       {/* Top Transition from Dark OrderCTA (#120B07) into Warm Sandstone (#E8C39E) */}
       <div
-        className="absolute top-0 left-0 w-full overflow-hidden leading-none pointer-events-none z-10 -translate-y-[1px]"
+        ref={topTransitionRef}
+        className="absolute top-0 left-0 w-full overflow-hidden leading-none pointer-events-none z-10 -translate-y-[1px] will-change-transform"
         aria-hidden="true"
       >
         <svg
@@ -245,12 +278,12 @@ export default function LocationsSection() {
               <button
                 id="location-find-store-btn"
                 onClick={handleCtaClick}
-                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#D96814] text-[#120B07] font-['Noto_Sans_Gujarati',sans-serif] font-bold text-base sm:text-lg tracking-wide transition-all duration-200 hover:bg-[#E98224] hover:shadow-[0_0_25px_rgba(217,104,20,0.45)] hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2A130A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#E8C39E] cursor-pointer"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#D96814] text-[#120B07] font-['Noto_Sans_Gujarati',sans-serif] font-bold text-base sm:text-lg tracking-wide transition-all duration-[170ms] hover:bg-[#E98224] hover:shadow-[0_0_25px_rgba(217,104,20,0.45)] hover:-translate-y-0.5 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2A130A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#E8C39E] cursor-pointer"
                 aria-label="સ્ટોર શોધો"
               >
                 <span>સ્ટોર શોધો</span>
                 <svg
-                  className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
+                  className="w-4 h-4 transition-transform duration-[170ms] group-hover:translate-x-1"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -265,7 +298,7 @@ export default function LocationsSection() {
               <button
                 id="location-directions-btn"
                 onClick={handleCtaClick}
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border border-[#2A130A]/40 text-[#2A130A] font-['Noto_Sans_Gujarati',sans-serif] font-semibold text-base sm:text-lg tracking-wide transition-all duration-200 hover:bg-[#2A130A]/10 hover:border-[#2A130A] hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2A130A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#E8C39E] cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border border-[#2A130A]/40 text-[#2A130A] font-['Noto_Sans_Gujarati',sans-serif] font-semibold text-base sm:text-lg tracking-wide transition-all duration-[170ms] hover:border-[#D96814] hover:text-[#D96814] hover:bg-[#D96814]/10 hover:-translate-y-0.5 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2A130A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#E8C39E] cursor-pointer"
                 aria-label="દિશા મેળવો"
               >
                 <svg
@@ -288,19 +321,22 @@ export default function LocationsSection() {
             </div>
 
             {/* Prominent Hub Highlights (Anand & Petlad) + Regional References */}
-            <div className="mt-10 pt-6 border-t border-[#2A130A]/15 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs sm:text-sm font-['Noto_Sans_Gujarati',sans-serif]">
-              <span className="font-bold text-[#D96814] flex items-center gap-1.5 bg-[#D96814]/10 px-2.5 py-1 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D96814] animate-pulse" />
+            <div
+              ref={chipsRef}
+              className="mt-10 pt-6 border-t border-[#2A130A]/15 flex flex-wrap items-center gap-x-4 gap-y-2.5 text-xs sm:text-sm font-['Noto_Sans_Gujarati',sans-serif] will-change-transform"
+            >
+              <span className="font-bold text-[#D96814] flex items-center gap-1.5 bg-[#D96814]/10 px-3 py-1 rounded-full border border-[#D96814]/20 transition-all duration-[160ms] hover:bg-[#D96814]/20 hover:scale-[1.04] cursor-default">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D96814] animate-pulse transition-transform duration-[160ms] group-hover:scale-110" />
                 આણંદ
               </span>
-              <span className="font-bold text-[#D96814] flex items-center gap-1.5 bg-[#D96814]/10 px-2.5 py-1 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D96814]" />
+              <span className="font-bold text-[#D96814] flex items-center gap-1.5 bg-[#D96814]/10 px-3 py-1 rounded-full border border-[#D96814]/20 transition-all duration-[160ms] hover:bg-[#D96814]/20 hover:scale-[1.04] cursor-default">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D96814] transition-transform duration-[160ms]" />
                 પેટલાદ
               </span>
-              <span className="text-[#2A130A]/50">• અમદાવાદ</span>
-              <span className="text-[#2A130A]/50">• વડોદરા</span>
-              <span className="text-[#2A130A]/50">• સુરત</span>
-              <span className="text-[#2A130A]/50">• રાજકોટ</span>
+              <span className="text-[#2A130A]/60 transition-colors duration-[160ms] hover:text-[#D96814]">• અમદાવાદ</span>
+              <span className="text-[#2A130A]/60 transition-colors duration-[160ms] hover:text-[#D96814]">• વડોદરા</span>
+              <span className="text-[#2A130A]/60 transition-colors duration-[160ms] hover:text-[#D96814]">• સુરત</span>
+              <span className="text-[#2A130A]/60 transition-colors duration-[160ms] hover:text-[#D96814]">• રાજકોટ</span>
             </div>
 
           </div>
@@ -319,7 +355,7 @@ export default function LocationsSection() {
                 alt="ગુજરાત સ્ટ્રીટ ફૂડ સંસ્કૃતિ અને વાતાવરણ"
                 loading="lazy"
                 decoding="async"
-                className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none will-change-transform opacity-25 mix-blend-luminosity filter contrast-125"
+                className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none will-change-transform opacity-25 mix-blend-luminosity filter contrast-125 img-hover-subtle"
               />
 
               {/* Warm Sandstone & Saffron Atmosphere Gradient Overlays */}
@@ -350,6 +386,7 @@ export default function LocationsSection() {
 
                 {/* Minimal Gujarat Territorial Contour Silhouette */}
                 <path
+                  ref={mapOutlineRef}
                   d="M100 120 
                      C120 100, 170 90, 200 100
                      C230 110, 255 130, 260 160
