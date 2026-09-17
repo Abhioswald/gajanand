@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import GujaratHeritage3D from './three/GujaratHeritage3D';
+
+// Lazy-load below-the-fold 3D decorative relief to preserve initial load performance
+const GujaratHeritage3D = React.lazy(() => import('./three/GujaratHeritage3D'));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -243,7 +245,9 @@ export default function BrandStory() {
             className="lg:col-span-5 relative flex items-center justify-center lg:justify-end will-change-transform mt-8 lg:mt-0"
           >
             {/* 3D Gujarati Sandstone Stepwell / Jharokha Relief Backdrop */}
-            <GujaratHeritage3D />
+            <React.Suspense fallback={null}>
+              <GujaratHeritage3D />
+            </React.Suspense>
 
             <div className="relative z-10 w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[460px] aspect-[4/3] sm:aspect-square lg:aspect-[4/5] rounded-3xl sm:rounded-[2rem] overflow-hidden border border-[#2A130A]/20 bg-[#2A130A]/5 shadow-2xl shadow-[#2A130A]/25 group">
               

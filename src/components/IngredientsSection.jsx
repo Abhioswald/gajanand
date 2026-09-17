@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import ExplodedVadaPav3D from './three/ExplodedVadaPav3D';
+
+// Lazy-load below-the-fold 3D scene to protect initial Hero load speed and memory
+const ExplodedVadaPav3D = React.lazy(() => import('./three/ExplodedVadaPav3D'));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -157,7 +159,8 @@ export default function IngredientsSection() {
   const lineRef = useRef(null);
   const cardsRef = useRef([]);
 
-  const [scrollProgress, setScrollProgress] = useState(1);
+  // Mutable ref for zero-overhead 60fps ScrollTrigger synchronization (no React re-renders)
+  const explosionProgressRef = useRef(1);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -187,14 +190,14 @@ export default function IngredientsSection() {
         return;
       }
 
-      // Scroll-linked explosion progress (0 = assembled when entering -> 1 = exploded view)
+      // Direct ref update on scroll without triggering React state reconciliation
       ScrollTrigger.create({
         trigger: section,
         start: 'top 85%',
         end: 'top 30%',
         scrub: 0.5,
         onUpdate: (self) => {
-          setScrollProgress(self.progress);
+          explosionProgressRef.current = self.progress;
         },
       });
 
@@ -381,9 +384,21 @@ export default function IngredientsSection() {
               {/* Inner framing outline */}
               <div className="absolute inset-2.5 rounded-2xl sm:rounded-[1.5rem] border border-[#2A130A]/10 pointer-events-none z-10" />
 
-              {/* Interactive 3D Exploded Vada Pav Component */}
+              {/* Interactive 3D Exploded Vada Pav with Instant 2D Fallback */}
               <div className="w-full h-full rounded-2xl sm:rounded-[1.5rem] overflow-hidden">
-                <ExplodedVadaPav3D scrollProgress={scrollProgress} />
+                <React.Suspense
+                  fallback={
+                    <img
+                      src="/assets/gajanand-ingredients.webp"
+                      alt="ગજાનંદ વડાપાઉંની સામગ્રી - પાવ, બટાકા વડો, લીલી ચટણી, લસણ મસાલો અને લીલું મરચું"
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover object-center rounded-2xl sm:rounded-[1.5rem]"
+                    />
+                  }
+                >
+                  <ExplodedVadaPav3D explosionProgressRef={explosionProgressRef} />
+                </React.Suspense>
               </div>
 
               {/* Soft Warm Lighting Gradient Overlay */}
