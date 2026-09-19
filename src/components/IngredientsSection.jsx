@@ -334,17 +334,17 @@ export default function IngredientsSection() {
         </div>
 
         {/* Core Layout Grid: Left Text Block + Center/Right Exploded Product Anatomy Spread */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center flex-1 my-auto">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-8 items-center flex-1 my-auto">
           
           {/* ========================================================= */}
           {/* LEFT ZONE: Dominant Gujarati Typography & Story           */}
           {/* ========================================================= */}
-          <div className="lg:col-span-4 xl:col-span-4 flex flex-col justify-center">
+          <div className="md:col-span-5 lg:col-span-4 xl:col-span-4 flex flex-col justify-center">
             
             {/* Main Display Heading */}
             <h2
               ref={headingRef}
-              className="font-['Noto_Serif_Gujarati',serif] font-black text-5xl sm:text-6xl lg:text-5xl xl:text-6xl tracking-tight leading-[1.08] text-[#1A0A04] will-change-transform"
+              className="font-['Noto_Serif_Gujarati',serif] font-black text-5xl sm:text-6xl md:text-4xl lg:text-5xl xl:text-6xl tracking-tight leading-[1.08] text-[#1A0A04] will-change-transform"
             >
               સ્વાદની
               <span className="block text-[#8F3418] mt-1">
@@ -390,10 +390,10 @@ export default function IngredientsSection() {
           {/* ========================================================= */}
           {/* CENTER & RIGHT ZONE: Desktop Exploded Visual & Callouts    */}
           {/* ========================================================= */}
-          <div className="hidden lg:flex lg:col-span-8 xl:col-span-8 relative items-center justify-center min-h-[540px] xl:min-h-[580px]">
+          <div className="hidden md:flex md:col-span-7 lg:col-span-8 xl:col-span-8 relative items-center justify-center min-h-[460px] lg:min-h-[540px] xl:min-h-[580px]">
             
             {/* Desktop Left-Side Callouts (01, 02, 03) */}
-            <div className="flex absolute left-0 top-0 bottom-0 w-[28%] flex-col justify-between py-6 z-20 pointer-events-auto">
+            <div className="flex absolute left-0 top-0 bottom-0 w-[30%] lg:w-[28%] flex-col justify-between py-6 z-20 pointer-events-auto">
               {INGREDIENT_CALLOUTS.slice(0, 3).map((item, idx) => (
                 <div
                   key={item.num}
@@ -406,11 +406,11 @@ export default function IngredientsSection() {
                     <span className="font-['Syne',sans-serif] text-xs font-black tracking-wider text-[#8F3418] group-hover:text-[#D96814] transition-colors duration-[170ms]">
                       {item.num}
                     </span>
-                    <h3 className="font-['Noto_Serif_Gujarati',serif] font-bold text-lg text-[#1A0A04] group-hover:text-[#8F3418] transition-colors duration-[170ms]">
+                    <h3 className="font-['Noto_Serif_Gujarati',serif] font-bold text-base lg:text-lg text-[#1A0A04] group-hover:text-[#8F3418] transition-colors duration-[170ms]">
                       {item.name}
                     </h3>
                   </div>
-                  <p className="font-['Noto_Sans_Gujarati',sans-serif] text-xs text-[#2A130A]/80 font-normal leading-relaxed">
+                  <p className="font-['Noto_Sans_Gujarati',sans-serif] text-[11px] lg:text-xs text-[#2A130A]/80 font-normal leading-relaxed">
                     {item.desc}
                   </p>
 
@@ -430,7 +430,7 @@ export default function IngredientsSection() {
             {/* Central Exploded Vada Pav Visual (Desktop) */}
             <div
               ref={productVisualRef}
-              className="relative w-full max-w-[380px] xl:max-w-[440px] aspect-[4/5] flex items-center justify-center will-change-transform z-10"
+              className="relative w-full max-w-[300px] lg:max-w-[380px] xl:max-w-[440px] aspect-[4/5] flex items-center justify-center will-change-transform z-10"
             >
               {/* Subtle Warm Shadow / Ambient Glow Underneath */}
               <div
@@ -453,7 +453,7 @@ export default function IngredientsSection() {
             </div>
 
             {/* Desktop Right-Side Callouts (04, 05, 06) */}
-            <div className="flex absolute right-0 top-0 bottom-0 w-[28%] flex-col justify-between py-6 z-20 pointer-events-auto">
+            <div className="flex absolute right-0 top-0 bottom-0 w-[30%] lg:w-[28%] flex-col justify-between py-6 z-20 pointer-events-auto">
               {INGREDIENT_CALLOUTS.slice(3, 6).map((item, idx) => (
                 <div
                   key={item.num}
@@ -473,14 +473,14 @@ export default function IngredientsSection() {
                   </div>
 
                   <div className="flex items-center justify-start gap-2 mb-1">
-                    <h3 className="font-['Noto_Serif_Gujarati',serif] font-bold text-lg text-[#1A0A04] group-hover:text-[#8F3418] transition-colors duration-[170ms]">
+                    <h3 className="font-['Noto_Serif_Gujarati',serif] font-bold text-base lg:text-lg text-[#1A0A04] group-hover:text-[#8F3418] transition-colors duration-[170ms]">
                       {item.name}
                     </h3>
                     <span className="font-['Syne',sans-serif] text-xs font-black tracking-wider text-[#8F3418] group-hover:text-[#D96814] transition-colors duration-[170ms]">
                       {item.num}
                     </span>
                   </div>
-                  <p className="font-['Noto_Sans_Gujarati',sans-serif] text-xs text-[#2A130A]/80 font-normal leading-relaxed">
+                  <p className="font-['Noto_Sans_Gujarati',sans-serif] text-[11px] lg:text-xs text-[#2A130A]/80 font-normal leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
@@ -517,25 +517,31 @@ export default function IngredientsSection() {
           </div>
 
           {/* ========================================================= */}
-          {/* MOBILE PRODUCT VIEW (<= 768px / < 1024px)                 */}
+          {/* MOBILE PRODUCT VIEW (< 768px)                             */}
           {/* ========================================================= */}
-          <div className="flex lg:hidden flex-col items-center justify-center w-full my-4">
-            <div className="w-[85%] max-w-[340px] aspect-square relative flex items-center justify-center">
+          <div className="flex md:hidden flex-col items-center justify-center w-full my-4">
+            <div className="w-full relative flex items-center justify-center">
               <div className="absolute inset-4 rounded-full bg-[#2A130A]/15 blur-xl pointer-events-none" />
               <img
-                src="/assets/gajanand-ingredients-assembled.webp"
-                alt="ગજાનંદ અસલી વડાપાઉં"
+                src="/assets/gajanand-ingredients.webp"
+                alt="ગજાનંદ અસલી વડાપાવ"
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-contain object-center drop-shadow-xl"
+                onError={(e) => {
+                  if (!e.currentTarget.dataset.fallback) {
+                    e.currentTarget.dataset.fallback = 'true';
+                    e.currentTarget.src = '/assets/gajanand-ingredients-exploded.webp';
+                  }
+                }}
+                className="block w-[85%] max-w-[420px] h-auto mx-auto object-contain drop-shadow-xl"
               />
             </div>
           </div>
 
         </div>
 
-        {/* Mobile & Tablet Vertical Callout List (< 1024px) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-10 border-t border-[#8F3418]/15 lg:hidden">
+        {/* Mobile & Tablet Vertical Callout List (< 768px) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-10 border-t border-[#8F3418]/15 md:hidden">
           {INGREDIENT_CALLOUTS.map((item) => (
             <div key={item.num} className="flex flex-col">
               <div className="flex items-center gap-2 mb-1.5">
