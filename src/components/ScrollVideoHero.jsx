@@ -174,7 +174,7 @@ export default function ScrollVideoHero() {
         },
       });
 
-      // 3. Initial Hero Content Animation (fades out completely by ~38% scroll)
+      // 3. Initial Hero Content Animation (holds 0-18%, fades out gradually 18-35% scroll)
       if (introTextRef.current) {
         tl.to(
           introTextRef.current,
@@ -183,9 +183,9 @@ export default function ScrollVideoHero() {
             y: -30,
             filter: 'blur(4px)',
             ease: 'power2.inOut',
-            duration: 0.38,
+            duration: 0.17,
           },
-          0
+          0.18
         );
       }
 
@@ -203,7 +203,7 @@ export default function ScrollVideoHero() {
         );
       }
 
-      // 5. Final Label Reveal (emerges around 72% to 95% scroll)
+      // 5. Final Outro Reveal (emerges around 82% to 98% scroll)
       if (outroTextRef.current) {
         tl.fromTo(
           outroTextRef.current,
@@ -217,9 +217,9 @@ export default function ScrollVideoHero() {
             y: 0,
             scale: 1,
             ease: 'power3.out',
-            duration: 0.22,
+            duration: 0.16,
           },
-          0.72
+          0.82
         );
       }
 
@@ -252,7 +252,7 @@ export default function ScrollVideoHero() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-[350vh] md:h-[400vh] bg-[#120B07] select-none"
+      className="relative w-full h-[240vh] md:h-[280vh] lg:h-[320vh] bg-[#120B07] select-none"
       aria-label="ગજાનંદ Vada Pav Hero Presentation"
     >
       {/* Pinned Sticky 100vh Hero Viewport */}
@@ -274,6 +274,7 @@ export default function ScrollVideoHero() {
           <video
             ref={videoRef}
             muted
+            defaultMuted
             playsInline
             webkit-playsinline="true"
             preload="metadata"
@@ -284,7 +285,7 @@ export default function ScrollVideoHero() {
             }`}
           >
             <source
-              src="/assets/vada-pav-scroll-optimized.mp4"
+              src="/assets/gajanand-hero-final.mp4"
               type="video/mp4"
             />
           </video>
