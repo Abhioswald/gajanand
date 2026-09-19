@@ -523,17 +523,11 @@ export default function IngredientsSection() {
             <div className="w-full relative flex items-center justify-center">
               <div className="absolute inset-4 rounded-full bg-[#2A130A]/15 blur-xl pointer-events-none" />
               <img
-                src="/assets/gajanand-ingredients.webp"
-                alt="ગજાનંદ અસલી વડાપાવ"
+                src="/assets/gajanand-ingredients-exploded.webp"
+                alt="ગજાનંદ વડાપાવના અલગ-અલગ ઘટકો"
                 loading="lazy"
                 decoding="async"
-                onError={(e) => {
-                  if (!e.currentTarget.dataset.fallback) {
-                    e.currentTarget.dataset.fallback = 'true';
-                    e.currentTarget.src = '/assets/gajanand-ingredients-exploded.webp';
-                  }
-                }}
-                className="block w-[85%] max-w-[420px] h-auto mx-auto object-contain drop-shadow-xl"
+                className="block w-[92%] max-w-[420px] h-auto mx-auto object-contain drop-shadow-xl"
               />
             </div>
           </div>
