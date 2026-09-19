@@ -1,24 +1,64 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Lazy-load below-the-fold 3D decorative plate
-const ProductPlate3D = React.lazy(() => import('./three/ProductPlate3D'));
-
 gsap.registerPlugin(ScrollTrigger);
+
+const VALUES = [
+  {
+    label: 'તાજા ઘટકો',
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {/* Leaf */}
+        <path d="M11 20A7 7 0 0 1 4 13C4 8 8 3 13 3c4 0 7 3 7 7 0 5-5 10-9 10Z" />
+        <path d="M13 3c-1 4-3 7-7 9" />
+      </svg>
+    ),
+  },
+  {
+    label: 'સ્વચ્છતા સાથે',
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {/* Shield / Check */}
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <path d="m9 12 2 2 4-4" />
+      </svg>
+    ),
+  },
+  {
+    label: 'અસલી સ્વાદ',
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {/* Flame / Spice */}
+        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'ગુજરાતનો પ્રેમ',
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {/* Heart */}
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+      </svg>
+    ),
+  },
+];
 
 export default function OrderCTA() {
   const sectionRef = useRef(null);
-  const topTransitionRef = useRef(null);
-  const eyebrowRef = useRef(null);
-  const headingRef = useRef(null);
+  const topMetaRef = useRef(null);
+  const headingLine1Ref = useRef(null);
+  const headingLine2Ref = useRef(null);
   const paragraphRef = useRef(null);
+  const secondaryCopyRef = useRef(null);
   const buttonsRef = useRef(null);
-  const badgeRef = useRef(null);
-  const imageContainerRef = useRef(null);
+  const valuesRef = useRef(null);
+  const productWrapRef = useRef(null);
+  const handwrittenRef = useRef(null);
+  const heritageArtRef = useRef(null);
+  const stampRef = useRef(null);
   const steamRef = useRef(null);
-
-  const [imgSrc, setImgSrc] = useState('/assets/gajanand-final-vadapav.webp');
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -30,55 +70,59 @@ export default function OrderCTA() {
       if (prefersReducedMotion) {
         gsap.set(
           [
-            topTransitionRef.current,
-            eyebrowRef.current,
-            headingRef.current,
+            topMetaRef.current,
+            headingLine1Ref.current,
+            headingLine2Ref.current,
             paragraphRef.current,
+            secondaryCopyRef.current,
             buttonsRef.current,
-            badgeRef.current,
-            imageContainerRef.current,
+            valuesRef.current,
+            productWrapRef.current,
+            handwrittenRef.current,
+            heritageArtRef.current,
+            stampRef.current,
           ],
           { opacity: 1, y: 0, scale: 1 }
         );
         return;
       }
 
+      // Master entrance timeline
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: 'top 70%',
-          end: 'bottom 20%',
+          start: 'top 75%',
+          end: 'bottom 25%',
           toggleActions: 'play none none reverse',
         },
       });
 
-      // 0. Curved transition gently settles
-      if (topTransitionRef.current) {
+      // 1. Section index "04 / ORDER NOW"
+      if (topMetaRef.current) {
         tl.fromTo(
-          topTransitionRef.current,
-          { y: 15, opacity: 0.85 },
-          { y: 0, opacity: 1, duration: 0.85, ease: 'power2.out' },
+          topMetaRef.current,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' },
           0
         );
       }
 
-      // 1. Eyebrow fade & lift
-      if (eyebrowRef.current) {
+      // 2. Headline line-by-line reveal
+      if (headingLine1Ref.current) {
         tl.fromTo(
-          eyebrowRef.current,
-          { opacity: 0, y: 16 },
-          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
-          0.05
+          headingLine1Ref.current,
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
+          0.08
         );
       }
 
-      // 2. Heading rises gently
-      if (headingRef.current) {
+      if (headingLine2Ref.current) {
         tl.fromTo(
-          headingRef.current,
-          { opacity: 0, y: 30 },
+          headingLine2Ref.current,
+          { opacity: 0, y: 24 },
           { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
-          0.12
+          0.16
         );
       }
 
@@ -86,50 +130,88 @@ export default function OrderCTA() {
       if (paragraphRef.current) {
         tl.fromTo(
           paragraphRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
-          0.22
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
+          0.24
         );
       }
 
-      // 4. CTA Buttons reveal
+      if (secondaryCopyRef.current) {
+        tl.fromTo(
+          secondaryCopyRef.current,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
+          0.30
+        );
+      }
+
+      // 4. CTA group
       if (buttonsRef.current) {
         tl.fromTo(
           buttonsRef.current,
-          { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
-          0.32
-        );
-      }
-
-      // 5. Optional microcopy badge
-      if (badgeRef.current) {
-        tl.fromTo(
-          badgeRef.current,
           { opacity: 0, y: 12 },
           { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
-          0.40
+          0.36
         );
       }
 
-      // 6. Food product presentation scales in gently with upward shift (scale 0.95 -> 1, y: 24 -> 0, opacity: 0 -> 1)
-      if (imageContainerRef.current) {
+      // 5. Value row stagger upward
+      if (valuesRef.current) {
         tl.fromTo(
-          imageContainerRef.current,
-          { opacity: 0, y: 24, scale: 0.95 },
-          { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'power3.out' },
-          0.2
+          valuesRef.current,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
+          0.42
         );
       }
 
-      // 7. Subtle ambient steam opacity & drift loop
+      // 6. Product image: opacity 0 -> 1, y 28 -> 0, scale 0.96 -> 1
+      if (productWrapRef.current) {
+        tl.fromTo(
+          productWrapRef.current,
+          { opacity: 0, y: 28, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'power3.out' },
+          0.18
+        );
+      }
+
+      // 7. Handwritten phrase fade in
+      if (handwrittenRef.current) {
+        tl.fromTo(
+          handwrittenRef.current,
+          { opacity: 0, y: 8 },
+          { opacity: 0.75, y: 0, duration: 0.8, ease: 'power2.out' },
+          0.44
+        );
+      }
+
+      // 8. Heritage illustration & stamp fade in last
+      if (heritageArtRef.current) {
+        tl.fromTo(
+          heritageArtRef.current,
+          { opacity: 0, y: 10 },
+          { opacity: 0.22, y: 0, duration: 0.85, ease: 'power3.out' },
+          0.48
+        );
+      }
+
+      if (stampRef.current) {
+        tl.fromTo(
+          stampRef.current,
+          { opacity: 0, scale: 0.92 },
+          { opacity: 0.35, scale: 1, duration: 0.8, ease: 'power2.out' },
+          0.52
+        );
+      }
+
+      // Subtle ambient steam slow upward drift
       if (steamRef.current) {
         gsap.to(steamRef.current, {
           y: -8,
-          opacity: 0.65,
+          opacity: 0.45,
           repeat: -1,
           yoyo: true,
-          duration: 2.8,
+          duration: 3.5,
           ease: 'sine.inOut',
         });
       }
@@ -152,96 +234,115 @@ export default function OrderCTA() {
     <section
       id="order-cta"
       ref={sectionRef}
-      className="relative w-full min-h-screen bg-[#120B07] text-[#F7E8CF] overflow-hidden flex flex-col justify-center select-none"
-      aria-label="ગજાનંદ ઓર્ડર કરો"
+      className="relative w-full min-h-screen lg:min-h-[105vh] bg-[#120B07] text-[#F7E8CF] overflow-hidden flex flex-col justify-between select-none"
+      aria-label="ગજાનંદ ઓર્ડર કરો — તાજું અને ગરમાગરમ"
     >
-      {/* Top Transition from Cream Section (#F7E8CF) into Dark Canvas (#120B07) */}
+      {/* Barely Visible CSS Paper / Grain Texture (<8% intensity) */}
       <div
-        ref={topTransitionRef}
-        className="absolute top-0 left-0 w-full overflow-hidden leading-none pointer-events-none z-10 -translate-y-[1px] will-change-transform"
-        aria-hidden="true"
-      >
-        <svg
-          className="relative block w-full h-14 sm:h-20 md:h-28 text-[#F7E8CF] fill-current"
-          viewBox="0 0 1440 120"
-          preserveAspectRatio="none"
-        >
-          <path d="M0,0 L1440,0 L1440,40 C1080,110 360,110 0,40 Z" />
-        </svg>
-      </div>
-
-      {/* Gujarat Detail: Faint Carved Arch & Stepwell Geometric Accent (under 8% opacity) */}
-      <div
-        className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        className="absolute inset-0 opacity-[0.035] pointer-events-none"
         style={{
           backgroundImage: `radial-gradient(#F7E8CF 1px, transparent 1px)`,
-          backgroundSize: '32px 32px',
+          backgroundSize: '28px 28px',
         }}
         aria-hidden="true"
       />
 
-      {/* Cinematic Ambient Atmosphere & Warm Rim Glow */}
+      {/* Atmospheric Shop Signage in Far Upper-Right Background (Dim / Blurred DOM/CSS) */}
       <div
-        className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-[#D96814]/15 blur-3xl pointer-events-none"
+        className="hidden xl:block absolute top-12 right-16 pointer-events-none select-none opacity-[0.05] blur-[1.5px]"
+        aria-hidden="true"
+      >
+        <span className="font-['Noto_Serif_Gujarati',serif] font-black text-7xl xl:text-8xl tracking-widest text-[#F7E8CF]">
+          ગજાનંદ વડાપાવ
+        </span>
+      </div>
+
+      {/* Atmospheric Soft Dark-Orange Glow behind the Product */}
+      <div
+        className="absolute top-1/3 right-1/4 w-[540px] h-[540px] rounded-full bg-[#D96814]/12 blur-3xl pointer-events-none"
         aria-hidden="true"
       />
       <div
-        className="absolute bottom-10 left-10 w-[400px] h-[400px] rounded-full bg-[#2A130A]/60 blur-3xl pointer-events-none"
+        className="absolute bottom-10 left-12 w-96 h-96 rounded-full bg-[#1A0D07]/80 blur-3xl pointer-events-none"
         aria-hidden="true"
       />
 
-      {/* Main Content Layout */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-28 sm:py-36 md:py-44 my-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          
-          {/* Left Column: Conversion Copy & Action */}
-          <div className="lg:col-span-6 flex flex-col justify-center">
-            
-            {/* Eyebrow */}
+      {/* ========================================================= */}
+      {/* MAIN CONTAINER: 42-45% / 55-58% ASYMMETRIC SPREAD         */}
+      {/* ========================================================= */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16 flex-1 flex flex-col justify-center">
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+
+          {/* ========================================================= */}
+          {/* LEFT ZONE: Left Content Area (42–45% visual width)        */}
+          {/* ========================================================= */}
+          <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-center">
+
+            {/* Top Meta: 04 / ORDER NOW */}
             <div
-              ref={eyebrowRef}
-              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#2A130A]/90 border border-[#D96814]/30 backdrop-blur-sm mb-6 sm:mb-8 w-fit will-change-transform"
+              ref={topMetaRef}
+              className="flex items-center gap-3.5 mb-6 sm:mb-8 will-change-transform"
             >
-              <span className="w-2 h-2 rounded-full bg-[#D96814] animate-pulse" />
-              <p className="font-['Noto_Sans_Gujarati',sans-serif] text-xs sm:text-sm font-bold tracking-wider text-[#F2A321]">
-                હવે સ્વાદ માણવાનો સમય
-              </p>
+              <div className="flex items-center gap-2 px-3 py-1 rounded-sm bg-[#D96814]/15 border border-[#D96814]/30">
+                <span className="font-['Syne',sans-serif] text-xs font-black tracking-widest text-[#F2A321]">
+                  04
+                </span>
+                <span className="w-1 h-1 rounded-full bg-[#D96814]" />
+                <span className="font-sans text-[11px] font-bold tracking-[0.22em] text-[#F7E8CF]/80 uppercase">
+                  ORDER NOW
+                </span>
+              </div>
+              <div className="h-[1px] w-20 bg-[#D96814]/30" />
             </div>
 
-            {/* Main Heading */}
-            <h2
-              ref={headingRef}
-              className="font-['Noto_Serif_Gujarati',serif] font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] tracking-tight leading-[1.14] text-[#F7E8CF] will-change-transform"
-            >
-              ગરમ. તાજું.
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#F7E8CF] via-[#F2A321] to-[#D96814] mt-1 sm:mt-2">
-                ગજાનંદ.
+            {/* Main Headline (Noto Serif Gujarati with generous scale and no matra clipping) */}
+            <h2 className="font-['Noto_Serif_Gujarati',serif] font-black text-5xl sm:text-6xl md:text-6xl lg:text-[4rem] xl:text-[4.25rem] tracking-tight leading-[1.18] overflow-visible">
+              <span
+                ref={headingLine1Ref}
+                className="block text-[#F7E8CF] will-change-transform"
+              >
+                ગજાનંદનો સ્વાદ
+              </span>
+              <span
+                ref={headingLine2Ref}
+                className="block text-transparent bg-clip-text bg-gradient-to-r from-[#F2A321] via-[#E98224] to-[#D96814] will-change-transform mt-1"
+              >
+                હવે તમારા સુધી!
               </span>
             </h2>
 
-            {/* Supporting Text */}
+            {/* Primary Supporting Copy */}
             <p
               ref={paragraphRef}
-              className="font-['Noto_Sans_Gujarati',sans-serif] text-base sm:text-lg md:text-xl text-[#F7E8CF]/80 font-normal leading-relaxed sm:leading-relaxed mt-6 sm:mt-8 max-w-xl will-change-transform"
+              className="font-['Noto_Sans_Gujarati',sans-serif] text-base sm:text-lg md:text-xl text-[#F7E8CF]/90 font-normal leading-relaxed mt-5 sm:mt-6 max-w-md will-change-transform"
             >
-              કરકરો વડો, નરમ પાવ, મસાલેદાર ચટણી અને ગરમાગરમ સ્વાદ — એક બાઇટ અને વાત પૂરી.
+              ગુજરાતની ગલીઓનો અસલી સ્વાદ, હવે એક ક્લિક દૂર.
             </p>
 
-            {/* Dual CTA Buttons */}
+            {/* Quieter Secondary Supporting Line */}
+            <p
+              ref={secondaryCopyRef}
+              className="font-['Noto_Sans_Gujarati',sans-serif] text-xs sm:text-sm text-[#C98B5B] font-medium tracking-wide mt-2.5 will-change-transform"
+            >
+              તાજું બનાવેલું • ગરમ પીરસેલું • પ્રેમથી તૈયાર
+            </p>
+
+            {/* CTA Group: Aligned horizontally on Desktop, stacked on Mobile */}
             <div
               ref={buttonsRef}
-              className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-5 will-change-transform"
+              className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-4.5 will-change-transform"
             >
-              {/* Primary CTA */}
+              {/* Primary CTA Button */}
               <button
                 id="cta-order-btn"
                 onClick={scrollToLocations}
-                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#D96814] text-[#120B07] font-['Noto_Sans_Gujarati',sans-serif] font-bold text-base sm:text-lg tracking-wide transition-all duration-[170ms] ease-out hover:bg-[#E98224] hover:shadow-[0_0_25px_rgba(217,104,20,0.5)] hover:-translate-y-[2px] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2A321] focus-visible:ring-offset-2 focus-visible:ring-offset-[#120B07] cursor-pointer"
-                aria-label="ઓર્ડર કરો"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-[#D96814] text-[#120B07] font-['Noto_Sans_Gujarati',sans-serif] font-bold text-base sm:text-lg tracking-wide transition-all duration-[170ms] ease-out hover:bg-[#E98224] hover:-translate-y-[2px] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2A321] cursor-pointer"
+                aria-label="હવે ઓર્ડર કરો"
               >
-                <span>ઓર્ડર કરો</span>
+                <span>હવે ઓર્ડર કરો</span>
                 <svg
-                  className="w-4 h-4 transition-transform duration-[170ms] ease-out group-hover:translate-x-1"
+                  className="w-4 h-4 transition-transform duration-[170ms] ease-out group-hover:translate-x-1 text-[#120B07]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -252,12 +353,12 @@ export default function OrderCTA() {
                 </svg>
               </button>
 
-              {/* Secondary CTA */}
+              {/* Secondary CTA Button */}
               <button
                 id="cta-store-locator-btn"
                 onClick={scrollToLocations}
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border border-[#F7E8CF]/40 text-[#F7E8CF] font-['Noto_Sans_Gujarati',sans-serif] font-medium text-base sm:text-lg tracking-wide transition-all duration-[170ms] ease-out hover:border-[#D96814] hover:text-[#F2A321] hover:bg-[#D96814]/10 hover:-translate-y-[2px] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2A321] focus-visible:ring-offset-2 focus-visible:ring-offset-[#120B07] cursor-pointer"
-                aria-label="નજીકનું સ્ટોર શોધો"
+                className="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl border border-[#F7E8CF]/35 bg-transparent text-[#F7E8CF] font-['Noto_Sans_Gujarati',sans-serif] font-medium text-base sm:text-lg tracking-wide transition-all duration-[170ms] ease-out hover:border-[#D96814] hover:text-[#F2A321] hover:bg-[#D96814]/10 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F2A321] cursor-pointer"
+                aria-label="અમારા સ્ટોર શોધો"
               >
                 <svg
                   className="w-4 h-4 text-[#C98B5B]"
@@ -274,43 +375,66 @@ export default function OrderCTA() {
                   />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span>નજીકનું સ્ટોર શોધો</span>
+                <span>અમારા સ્ટોર શોધો</span>
               </button>
             </div>
 
-            {/* Optional Microcopy Badge */}
+            {/* Micro Value Row: Single row on Desktop, 2x2 grid on Mobile */}
             <div
-              ref={badgeRef}
-              className="mt-8 flex items-center gap-2.5 text-xs sm:text-sm text-[#C98B5B] font-['Noto_Sans_Gujarati',sans-serif] will-change-transform"
+              ref={valuesRef}
+              className="mt-10 sm:mt-12 pt-6 border-t border-[#F7E8CF]/12 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5 will-change-transform"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#496A3D]" />
-              <span>તાજું બનાવેલું • ગરમ પીરસેલું</span>
+              {VALUES.map((val) => (
+                <div key={val.label} className="flex items-center gap-2 text-[#F7E8CF]">
+                  <div className="p-1.5 rounded-lg bg-[#D96814]/15 border border-[#D96814]/30 text-[#F2A321] flex-shrink-0">
+                    {val.icon}
+                  </div>
+                  <span className="font-['Noto_Sans_Gujarati',sans-serif] text-xs sm:text-[13px] font-medium text-[#F7E8CF]/90">
+                    {val.label}
+                  </span>
+                </div>
+              ))}
             </div>
 
           </div>
 
-          {/* Right Column: Appetizing Food Presentation */}
-          <div
-            ref={imageContainerRef}
-            className="lg:col-span-6 flex items-center justify-center will-change-transform"
-          >
-            <div className="relative w-full max-w-[440px] sm:max-w-[480px] lg:max-w-[540px] aspect-square rounded-3xl overflow-hidden flex items-center justify-center p-6 border border-[#F7E8CF]/10 bg-gradient-to-b from-[#2A130A]/40 to-[#120B07]/80 shadow-2xl shadow-black/90">
-              
-              {/* Selective 3D Earthen Brass Plate & Soft Shadow Pedestal */}
-              <React.Suspense fallback={null}>
-                <ProductPlate3D />
-              </React.Suspense>
+          {/* ========================================================= */}
+          {/* RIGHT ZONE: Product Visual (55–58% visual width)          */}
+          {/* ========================================================= */}
+          <div className="lg:col-span-7 xl:col-span-7 relative flex items-center justify-center lg:justify-end">
 
-              {/* Background Circular Thali / Sandstone Platter Glow */}
-              <div className="absolute inset-8 rounded-full border border-[#D96814]/20 bg-gradient-to-tr from-[#120B07] via-[#2A130A]/50 to-[#D96814]/10 pointer-events-none" />
-              
-              {/* Outer Ring Detail */}
-              <div className="absolute inset-12 rounded-full border border-[#C98B5B]/15 border-dashed pointer-events-none" />
+            {/* Handwritten Accent near the product */}
+            <div
+              ref={handwrittenRef}
+              className="absolute -top-6 sm:-top-8 right-4 sm:right-10 z-20 pointer-events-none select-none will-change-transform opacity-75"
+            >
+              <p className="font-serif italic text-base sm:text-lg text-[#C98B5B] tracking-wide drop-shadow-md">
+                “Same Street Taste. <br />
+                <span className="text-[#F7E8CF] font-normal">Bigger Happiness.</span>”
+              </p>
+            </div>
 
-              {/* Rising Steam Effect */}
+            {/* Primary Product Visual Container (Grounded & Dominant) */}
+            <div
+              ref={productWrapRef}
+              className="relative w-full max-w-[500px] sm:max-w-[560px] lg:max-w-[620px] aspect-square flex items-center justify-center will-change-transform"
+            >
+              {/* Soft Saffron Radial Halo behind Product */}
+              <div
+                className="absolute inset-10 rounded-full bg-gradient-to-tr from-[#D96814]/22 via-[#F2A321]/15 to-transparent blur-3xl pointer-events-none"
+                aria-hidden="true"
+              />
+
+              {/* Ground Shadow beneath Product */}
+              <div
+                className="absolute inset-x-12 bottom-6 h-20 rounded-full bg-black/75 blur-2xl pointer-events-none"
+                aria-hidden="true"
+              />
+
+              {/* 2-3 Subtle CSS/SVG Steam Wisps above Vada Pav */}
               <div
                 ref={steamRef}
-                className="absolute top-10 inset-x-0 mx-auto w-32 h-20 opacity-40 pointer-events-none flex justify-center gap-4 text-[#F7E8CF]"
+                className="absolute top-10 inset-x-0 mx-auto w-32 h-20 opacity-35 pointer-events-none flex justify-center gap-4 text-[#F7E8CF]"
                 aria-hidden="true"
               >
                 <svg viewBox="0 0 24 48" className="w-4 h-12 stroke-current fill-none" strokeWidth="1.2">
@@ -324,34 +448,70 @@ export default function OrderCTA() {
                 </svg>
               </div>
 
-              {/* Food Presentation Image with Graceful Poster Fallback */}
-              <div className="relative z-10 w-full h-full flex items-center justify-center">
-                <img
-                  src={imgSrc}
-                  onError={() => setImgSrc('/assets/vada-pav-poster.jpg')}
-                  alt="ગરમાગરમ ગજાનંદ વડાપાઉં"
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover object-center rounded-2xl filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
-                />
+              {/* Dominant Product Asset (No Card Wrapper / Transparent Background) */}
+              <img
+                src="/assets/gajanand-order-vadapav.webp"
+                alt="ગજાનંદ વડાપાવ — લીલી ચટણી, બટાકા વડા અને મસાલા સાથે"
+                loading="lazy"
+                decoding="async"
+                className="relative z-10 w-full h-full object-contain object-center drop-shadow-[0_25px_50px_rgba(0,0,0,0.85)]"
+              />
 
-                {/* Soft Warm Rim Light Gradient Overlay on Food */}
-                <div className="absolute inset-0 rounded-2xl pointer-events-none bg-gradient-to-t from-[#120B07]/80 via-transparent to-transparent" />
-                
-                {/* Floating Authentic Quality Seal */}
-                <div className="absolute bottom-4 right-4 px-3.5 py-1.5 rounded-full bg-[#120B07]/90 border border-[#F2A321]/40 backdrop-blur-md flex items-center gap-2 shadow-lg">
-                  <span className="w-2 h-2 rounded-full bg-[#D96814] animate-ping" />
-                  <span className="font-['Noto_Serif_Gujarati',serif] text-xs font-bold text-[#F7E8CF]">
-                    અસલી સ્વાદ
-                  </span>
+              {/* Subtle Circular Heritage Stamp in Lower-Right */}
+              <div
+                ref={stampRef}
+                className="hidden sm:block absolute bottom-2 right-4 z-20 pointer-events-none select-none will-change-transform"
+                aria-hidden="true"
+              >
+                <div className="w-20 h-20 text-[#D96814]/70">
+                  <svg viewBox="0 0 100 100" className="w-full h-full stroke-current fill-none" strokeWidth="1.4">
+                    <circle cx="50" cy="50" r="46" strokeDasharray="3 3" />
+                    <circle cx="50" cy="50" r="38" />
+                    <path id="orderSealPath" d="M 50, 50 m -30, 0 a 30,30 0 1,1 60,0 a 30,30 0 1,1 -60,0" fill="none" />
+                    <text className="text-[7.5px] tracking-[0.2em] uppercase fill-current font-semibold">
+                      <textPath href="#orderSealPath" startOffset="0%">
+                        TRADITIONAL TASTE • GUJARAT •
+                      </textPath>
+                    </text>
+                    <circle cx="50" cy="50" r="4" fill="currentColor" />
+                  </svg>
                 </div>
               </div>
 
             </div>
+
           </div>
 
         </div>
+
       </div>
+
+      {/* ========================================================= */}
+      {/* LOWER-LEFT HERITAGE LINE ART & NOTE                       */}
+      {/* ========================================================= */}
+      <div
+        ref={heritageArtRef}
+        className="relative w-full overflow-hidden border-t border-[#D96814]/15 py-3 pointer-events-none select-none will-change-transform"
+        aria-hidden="true"
+      >
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 flex items-center justify-between text-[11px] sm:text-xs text-[#C98B5B]/70">
+          {/* Left: Street food cart / stall line art icon */}
+          <div className="flex items-center gap-3">
+            <svg viewBox="0 0 32 32" className="w-4 h-4 stroke-current fill-none" strokeWidth="1.4">
+              <path d="M4 22h24M8 22v-8h16v8M6 14h20l-2-6H8l-2 6zM11 26a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM21 26a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+            </svg>
+            <span className="font-['Noto_Sans_Gujarati',sans-serif]">
+              અસલી ગુજરાતી સ્ટ્રીટ ફૂડ સંસ્કૃતિ
+            </span>
+          </div>
+
+          {/* Right: Heritage note */}
+          <div className="font-['Syne',sans-serif] tracking-widest uppercase text-[10px]">
+            SINCE 1978 • ANAND & PETLAD
+          </div>
+        </div>
+      </div>
+
     </section>
   );
 }

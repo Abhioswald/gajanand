@@ -2,148 +2,93 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Lazy-load below-the-fold 3D scene to protect initial Hero load speed and memory
-const ExplodedVadaPav3D = React.lazy(() => import('./three/ExplodedVadaPav3D'));
-
 gsap.registerPlugin(ScrollTrigger);
 
-const INGREDIENTS = [
+const INGREDIENT_CALLOUTS = [
   {
     num: '01',
     name: 'પાવ',
-    english: 'Soft Pav',
-    desc: 'નરમ, હળવો અને હળવેથી શેકેલો.',
-    icon: (
-      <svg
-        viewBox="0 0 64 64"
-        className="w-12 h-12 stroke-current fill-none transition-transform duration-200"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        {/* Soft rounded bun silhouette */}
-        <path d="M12 40 C12 24, 20 16, 32 16 C44 16, 52 24, 52 40 C52 44, 48 46, 32 46 C16 46, 12 44, 12 40 Z" />
-        {/* Bun central split / softness crease */}
-        <path d="M32 18 V 44" strokeDasharray="3 2" opacity="0.6" />
-        {/* Gentle steam / glaze warmth */}
-        <path d="M22 11 C22 9, 24 7, 24 5" opacity="0.5" strokeWidth="1" />
-        <path d="M32 10 C32 8, 34 6, 34 4" opacity="0.5" strokeWidth="1" />
-        <path d="M42 11 C42 9, 44 7, 44 5" opacity="0.5" strokeWidth="1" />
-        {/* Base shadow baseline */}
-        <ellipse cx="32" cy="50" rx="20" ry="2.5" opacity="0.25" />
-      </svg>
-    ),
+    desc: 'મુલાયમ, તાજું અને હળવેથી શેકેલું.',
+    side: 'left',
+    topPercent: '14%',
   },
   {
     num: '02',
     name: 'બટાકા વડો',
-    english: 'Bataka Vado',
-    desc: 'બહારથી કરકરો, અંદરથી નરમ અને મસાલેદાર.',
-    icon: (
-      <svg
-        viewBox="0 0 64 64"
-        className="w-12 h-12 stroke-current fill-none transition-transform duration-200"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        {/* Crisp golden vada sphere */}
-        <circle cx="32" cy="32" r="17" />
-        {/* Besan batter crisp texture crinkles */}
-        <path d="M22 28 C26 24, 30 26, 34 22" opacity="0.65" />
-        <path d="M25 38 C29 35, 36 39, 41 34" opacity="0.65" />
-        <circle cx="36" cy="27" r="1" fill="currentColor" opacity="0.7" />
-        <circle cx="28" cy="34" r="1" fill="currentColor" opacity="0.7" />
-        {/* Mustard seed & spice seasoning dots */}
-        <circle cx="24" cy="25" r="0.8" fill="currentColor" opacity="0.5" />
-        <circle cx="39" cy="38" r="0.8" fill="currentColor" opacity="0.5" />
-        {/* Golden halo radiance */}
-        <circle cx="32" cy="32" r="21" strokeDasharray="2 3" opacity="0.3" strokeWidth="0.8" />
-        <ellipse cx="32" cy="53" rx="15" ry="2" opacity="0.2" />
-      </svg>
-    ),
+    desc: 'ખાસ મસાલા સાથે બનાવેલો કરકરો અને નરમ વડો.',
+    side: 'left',
+    topPercent: '48%',
   },
   {
     num: '03',
     name: 'લીલી ચટણી',
-    english: 'Fresh Chutney',
-    desc: 'ધાણા, મરચાં અને તાજી હર્બલ તીખાશ.',
-    icon: (
-      <svg
-        viewBox="0 0 64 64"
-        className="w-12 h-12 stroke-current fill-none transition-transform duration-200"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        {/* Clay serving bowl */}
-        <path d="M14 30 C14 44, 22 49, 32 49 C42 49, 50 44, 50 30 Z" />
-        <line x1="12" y1="30" x2="52" y2="30" />
-        {/* Fresh coriander leaf motif sprouting */}
-        <path d="M32 30 C32 20, 24 16, 22 14 C28 14, 32 18, 32 24 C32 18, 36 14, 42 14 C40 16, 32 20, 32 30" fill="none" />
-        <circle cx="32" cy="15" r="1.5" fill="currentColor" opacity="0.7" />
-        {/* Bowl foot base */}
-        <line x1="26" y1="49" x2="38" y2="49" strokeWidth="2" />
-        <ellipse cx="32" cy="53" rx="16" ry="2" opacity="0.2" />
-      </svg>
-    ),
+    desc: 'તાજા ધાણા, મરચાં અને મસાલાનો તાજો સ્વાદ.',
+    side: 'left',
+    topPercent: '80%',
   },
   {
     num: '04',
+    name: 'ડુંગળી',
+    desc: 'તાજી અને કરકરી લાલ ડુંગળી.',
+    side: 'right',
+    topPercent: '18%',
+  },
+  {
+    num: '05',
     name: 'લસણ મસાલો',
-    english: 'Dry Garlic Masala',
-    desc: 'મસાલેદાર, સુગંધિત અને સ્વાદમાં જોરદાર.',
+    desc: 'તીખો, સુગંધિત અને ગજાનંદની ખાસ ઓળખ.',
+    side: 'right',
+    topPercent: '52%',
+  },
+  {
+    num: '06',
+    name: 'લીલું મરચું',
+    desc: 'સ્વાદને પૂર્ણ કરતી એક ખાસ સાથી.',
+    side: 'right',
+    topPercent: '84%',
+  },
+];
+
+const VALUE_ITEMS = [
+  {
+    label: 'FRESH INGREDIENTS',
     icon: (
-      <svg
-        viewBox="0 0 64 64"
-        className="w-12 h-12 stroke-current fill-none transition-transform duration-200"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        {/* Whole garlic clove / pod silhouette */}
-        <path d="M32 14 C32 14, 18 26, 18 36 C18 44, 24 48, 32 48 C40 48, 46 44, 46 36 C46 26, 32 14, 32 14 Z" />
-        {/* Clove segmentation lines */}
-        <path d="M26 46 C23 40, 24 30, 32 16" opacity="0.6" />
-        <path d="M38 46 C41 40, 40 30, 32 16" opacity="0.6" />
-        {/* Masala spice sprinkle dots */}
-        <circle cx="15" cy="22" r="1" fill="currentColor" opacity="0.5" />
-        <circle cx="49" cy="24" r="1.2" fill="currentColor" opacity="0.6" />
-        <circle cx="48" cy="34" r="0.8" fill="currentColor" opacity="0.5" />
-        <circle cx="16" cy="36" r="0.9" fill="currentColor" opacity="0.5" />
-        {/* Spire tip */}
-        <line x1="32" y1="14" x2="32" y2="8" strokeWidth="1.2" />
-        <ellipse cx="32" cy="52" rx="14" ry="2" opacity="0.2" />
+      <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {/* Leaf icon */}
+        <path d="M11 20A7 7 0 0 1 4 13C4 8 8 3 13 3c4 0 7 3 7 7 0 5-5 10-9 10Z" />
+        <path d="M13 3c-1 4-3 7-7 9" />
       </svg>
     ),
   },
   {
-    num: '05',
-    name: 'લીલું મરચું',
-    english: 'Fried Green Chilli',
-    desc: 'અંતમાં મળતી ખરો ગુજરાતી તીખાશનો સ્પર્શ.',
+    label: 'AUTHENTIC SPICES',
     icon: (
-      <svg
-        viewBox="0 0 64 64"
-        className="w-12 h-12 stroke-current fill-none transition-transform duration-200"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        {/* Graceful curved green chilli silhouette */}
-        <path d="M20 18 C28 22, 42 26, 44 38 C45 46, 38 52, 30 52 C26 52, 22 48, 24 44 C26 38, 38 34, 20 18 Z" />
-        {/* Chilli stem */}
-        <path d="M20 18 C18 16, 14 14, 12 15 C13 18, 16 19, 18 19" strokeWidth="1.2" />
-        <line x1="12" y1="15" x2="8" y2="12" strokeWidth="1.2" />
-        {/* Blister frying marks */}
-        <path d="M30 32 C34 33, 36 36, 38 40" strokeDasharray="2 2" opacity="0.6" />
-        <circle cx="34" cy="46" r="0.9" fill="currentColor" opacity="0.6" />
-        <ellipse cx="30" cy="54" rx="16" ry="2" opacity="0.2" />
+      <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {/* Spice mortar/seed motif */}
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+        <circle cx="12" cy="12" r="8" strokeDasharray="2 3" />
+      </svg>
+    ),
+  },
+  {
+    label: 'TRADITIONAL RECIPE',
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {/* Steaming bowl */}
+        <path d="M4 11h16a8 8 0 0 1-16 0Z" />
+        <path d="M8 7c0-2 1-3 1-4" />
+        <path d="M12 7c0-2 1-3 1-4" />
+        <path d="M16 7c0-2 1-3 1-4" />
+      </svg>
+    ),
+  },
+  {
+    label: 'PURE LOVE',
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {/* Heart icon */}
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
       </svg>
     ),
   },
@@ -151,16 +96,17 @@ const INGREDIENTS = [
 
 export default function IngredientsSection() {
   const sectionRef = useRef(null);
-  const topTransitionRef = useRef(null);
-  const eyebrowRef = useRef(null);
+  const topMetaRef = useRef(null);
+  const handwrittenAccentRef = useRef(null);
   const headingRef = useRef(null);
+  const subHeadingRef = useRef(null);
   const paragraphRef = useRef(null);
-  const imageContainerRef = useRef(null);
-  const lineRef = useRef(null);
-  const cardsRef = useRef([]);
-
-  // Mutable ref for zero-overhead 60fps ScrollTrigger synchronization (no React re-renders)
-  const explosionProgressRef = useRef(1);
+  const ctaRef = useRef(null);
+  const productVisualRef = useRef(null);
+  const calloutRefs = useRef([]);
+  const connectorRefs = useRef([]);
+  const sideDetailRef = useRef(null);
+  const bottomStripRef = useRef(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -172,17 +118,22 @@ export default function IngredientsSection() {
       if (prefersReducedMotion) {
         gsap.set(
           [
-            topTransitionRef.current,
-            eyebrowRef.current,
+            topMetaRef.current,
+            handwrittenAccentRef.current,
             headingRef.current,
+            subHeadingRef.current,
             paragraphRef.current,
-            imageContainerRef.current,
-            lineRef.current,
-            ...cardsRef.current,
+            ctaRef.current,
+            productVisualRef.current,
+            sideDetailRef.current,
+            bottomStripRef.current,
+            ...calloutRefs.current,
+            ...connectorRefs.current,
           ],
           {
             opacity: 1,
             y: 0,
+            x: 0,
             scale: 1,
             scaleX: 1,
           }
@@ -190,100 +141,121 @@ export default function IngredientsSection() {
         return;
       }
 
-      // Direct ref update on scroll without triggering React state reconciliation
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top 85%',
-        end: 'top 30%',
-        scrub: 0.5,
-        onUpdate: (self) => {
-          explosionProgressRef.current = self.progress;
-        },
-      });
-
+      // Master entrance timeline triggered on scroll
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: 'top 70%',
-          end: 'bottom 20%',
+          start: 'top 75%',
+          end: 'bottom 25%',
           toggleActions: 'play none none reverse',
         },
       });
 
-      // 0. Top curved transition gently settles into view
-      if (topTransitionRef.current) {
+      // 1. 03 / OUR INGREDIENTS reveal
+      if (topMetaRef.current) {
         tl.fromTo(
-          topTransitionRef.current,
-          { y: 15, opacity: 0.85 },
-          { y: 0, opacity: 1, duration: 0.85, ease: 'power2.out' },
+          topMetaRef.current,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' },
           0
         );
       }
 
-      // 1. Eyebrow fade & lift
-      if (eyebrowRef.current) {
+      // 2. Handwritten phrase fades in
+      if (handwrittenAccentRef.current) {
         tl.fromTo(
-          eyebrowRef.current,
-          { opacity: 0, y: 16 },
-          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
-          0.05
+          handwrittenAccentRef.current,
+          { opacity: 0, y: 10 },
+          { opacity: 0.9, y: 0, duration: 0.75, ease: 'power2.out' },
+          0.06
         );
       }
 
-      // 2. Heading moves upward
+      // 3. Gujarati heading reveals upward
       if (headingRef.current) {
         tl.fromTo(
           headingRef.current,
-          { opacity: 0, y: 28 },
+          { opacity: 0, y: 22 },
           { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
-          0.12
+          0.1
         );
       }
 
-      // 3. Supporting copy follows
+      // 4. Subheading & Body copy follow
+      if (subHeadingRef.current) {
+        tl.fromTo(
+          subHeadingRef.current,
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
+          0.18
+        );
+      }
+
       if (paragraphRef.current) {
         tl.fromTo(
           paragraphRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
-          0.22
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
+          0.24
         );
       }
 
-      // 4. Central exploded ingredients image gently rises into view: scale 0.96 -> 1, y: 20 -> 0, opacity: 0 -> 1
-      if (imageContainerRef.current) {
+      if (ctaRef.current) {
         tl.fromTo(
-          imageContainerRef.current,
-          { opacity: 0, y: 20, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: 'power3.out' },
-          0.25
+          ctaRef.current,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' },
+          0.30
         );
       }
 
-      // 5. Horizontal connector line grows from left to right
-      if (lineRef.current) {
+      // 5. Main Exploded Product fades/rises: y 25 -> 0, scale 0.97 -> 1, opacity 0 -> 1
+      if (productVisualRef.current) {
         tl.fromTo(
-          lineRef.current,
-          { scaleX: 0, transformOrigin: 'left center' },
-          { scaleX: 1, duration: 1.0, ease: 'power2.out' },
-          0.34
+          productVisualRef.current,
+          { opacity: 0, y: 25, scale: 0.97 },
+          { opacity: 1, y: 0, scale: 1, duration: 1.05, ease: 'power3.out' },
+          0.16
         );
       }
 
-      // 6. Sequential ingredient item reveal (slight stagger)
-      if (cardsRef.current.length > 0) {
+      // 6. Connector lines draw outward (scaleX: 0 -> 1)
+      if (connectorRefs.current.length > 0) {
         tl.fromTo(
-          cardsRef.current,
-          { opacity: 0, y: 20, scale: 0.96 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.75,
-            stagger: 0.08,
-            ease: 'power3.out',
-          },
-          0.40
+          connectorRefs.current,
+          { scaleX: 0, opacity: 0 },
+          { scaleX: 1, opacity: 0.55, duration: 0.75, stagger: 0.05, ease: 'power2.out' },
+          0.35
+        );
+      }
+
+      // 7. Callouts reveal sequentially
+      if (calloutRefs.current.length > 0) {
+        tl.fromTo(
+          calloutRefs.current,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.65, stagger: 0.06, ease: 'power3.out' },
+          0.38
+        );
+      }
+
+      // Right-side micro detail
+      if (sideDetailRef.current) {
+        tl.fromTo(
+          sideDetailRef.current,
+          { opacity: 0, x: 10 },
+          { opacity: 0.65, x: 0, duration: 0.85, ease: 'power2.out' },
+          0.4
+        );
+      }
+
+      // 8. Dark heritage strip rises slightly
+      if (bottomStripRef.current) {
+        tl.fromTo(
+          bottomStripRef.current,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
+          0.45
         );
       }
     }, sectionRef);
@@ -293,184 +265,354 @@ export default function IngredientsSection() {
     };
   }, []);
 
+  const handleScrollToOrder = () => {
+    const target = document.getElementById('order-cta') || document.getElementById('locations');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section
       id="ingredients"
       ref={sectionRef}
-      className="relative w-full min-h-screen bg-[#F7E8CF] text-[#2A130A] overflow-hidden flex flex-col justify-center select-none"
-      aria-label="ગજાનંદ સ્વાદની અંદરની વાત"
+      className="relative w-full min-h-screen lg:min-h-[118vh] bg-[#F7E8CF] text-[#1A0A04] overflow-hidden flex flex-col justify-between select-none"
+      aria-label="ગજાનંદ સ્વાદની અંદરની વાત — ઘટકોની ઓળખ"
     >
-      {/* Top Saffron Flow Transition from BrandStory (#D96814) into Cream Canvas (#F7E8CF) */}
+      {/* Background Texture: Parchment Texture Overlay (14% Opacity) */}
       <div
-        ref={topTransitionRef}
-        className="absolute top-0 left-0 w-full overflow-hidden leading-none pointer-events-none z-10 -translate-y-[1px] will-change-transform"
-        aria-hidden="true"
-      >
-        <svg
-          className="relative block w-full h-14 sm:h-20 md:h-28 text-[#D96814] fill-current"
-          viewBox="0 0 1440 120"
-          preserveAspectRatio="none"
-        >
-          <path d="M0,0 L1440,0 L1440,40 C1080,110 360,110 0,40 Z" />
-        </svg>
-      </div>
-
-      {/* Subtle Bandhani micro-dot texture in warm cream */}
-      <div
-        className="absolute inset-0 opacity-[0.035] pointer-events-none"
+        className="absolute inset-0 opacity-[0.14] pointer-events-none mix-blend-multiply bg-cover bg-center"
         style={{
-          backgroundImage: `radial-gradient(#2A130A 1.5px, transparent 1.5px)`,
-          backgroundSize: '24px 24px',
+          backgroundImage: `url('/assets/parchment-texture.webp')`,
         }}
         aria-hidden="true"
       />
 
-      {/* Ambient warm radiance */}
+      {/* Subtle Warm Saffron & Sandstone Ambient Radiance */}
       <div
-        className="absolute top-1/3 left-0 w-[450px] h-[450px] rounded-full bg-[#E98224]/10 blur-3xl pointer-events-none"
+        className="absolute -top-24 right-1/4 w-96 h-96 rounded-full bg-[#D96814]/10 blur-3xl pointer-events-none"
         aria-hidden="true"
       />
       <div
-        className="absolute bottom-12 right-0 w-[450px] h-[450px] rounded-full bg-[#C98B5B]/15 blur-3xl pointer-events-none"
+        className="absolute bottom-24 left-10 w-80 h-80 rounded-full bg-[#C98B5B]/15 blur-3xl pointer-events-none"
         aria-hidden="true"
       />
 
-      {/* Main Container */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-28 sm:py-36 md:py-44 my-auto">
+      {/* ========================================================= */}
+      {/* MAIN EDITORIAL SPREAD CONTAINER                          */}
+      {/* ========================================================= */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-16 sm:pt-20 lg:pt-24 pb-12 sm:pb-16 flex-1 flex flex-col justify-between">
         
-        {/* Intro Block: Eyebrow, Heading, Supporting Paragraph & Central Exploded Ingredients Image */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center mb-14 sm:mb-16 lg:mb-20">
+        {/* Top Header Row: 03 / OUR INGREDIENTS + Handwritten Accent */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 lg:mb-10">
           
-          {/* Left Column: Typography */}
-          <div className="lg:col-span-7 flex flex-col justify-center">
-            {/* Eyebrow */}
-            <div
-              ref={eyebrowRef}
-              className="flex items-center gap-3 mb-5 sm:mb-6 will-change-transform"
-            >
-              <span className="w-2 h-2 rounded-full bg-[#D96814]" />
-              <p className="font-['Noto_Sans_Gujarati',sans-serif] text-xs sm:text-sm font-bold tracking-widest text-[#D96814] uppercase">
-                સ્વાદની અંદરની વાત
-              </p>
-            </div>
-
-            {/* Main Heading */}
-            <h2
-              ref={headingRef}
-              className="font-['Noto_Serif_Gujarati',serif] font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] tracking-tight leading-[1.18] text-[#1A0A04] will-change-transform"
-            >
-              સરળ સામગ્રી.
-              <span className="block text-[#D96814] mt-1 sm:mt-2">
-                જોરદાર સ્વાદ.
+          {/* Top-Left Section Index Tag */}
+          <div ref={topMetaRef} className="flex items-center gap-3.5 will-change-transform">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-sm bg-[#8F3418]/10 border border-[#8F3418]/20">
+              <span className="font-['Syne',sans-serif] text-xs font-black tracking-widest text-[#8F3418]">
+                03
               </span>
-            </h2>
+              <span className="w-1 h-1 rounded-full bg-[#8F3418]" />
+              <span className="font-sans text-[11px] font-bold tracking-[0.22em] text-[#8F3418] uppercase">
+                OUR INGREDIENTS
+              </span>
+            </div>
+            <div className="h-[1px] w-16 sm:w-24 bg-[#8F3418]/25" />
+          </div>
 
-            {/* Supporting Copy */}
-            <p
-              ref={paragraphRef}
-              className="font-['Noto_Sans_Gujarati',sans-serif] text-base sm:text-lg md:text-xl text-[#2A130A]/85 font-normal leading-relaxed sm:leading-relaxed mt-6 max-w-2xl will-change-transform"
-            >
-              દરેક સ્તર પોતાનો સ્વાદ લાવે છે — નરમ પાવ, કરકરો મસાલેદાર બટાકા વડો, તાજી લીલી ચટણી, લસણનો મસાલો અને લીલા મરચાની તીખાશ.
+          {/* Top-Right: Decorative Handwritten Accent Phrase */}
+          <div
+            ref={handwrittenAccentRef}
+            className="flex items-center gap-2 text-left sm:text-right will-change-transform"
+          >
+            <p className="font-serif italic text-sm sm:text-base text-[#8F3418] tracking-wide leading-tight">
+              “Simple Ingredients. <br className="hidden sm:inline" />
+              <span className="font-semibold text-[#D96814]">Extraordinary Taste.</span>”
             </p>
           </div>
 
-          {/* Right Column: Exploded Vada Pav Composition Supporting 3D Visual */}
-          <div
-            ref={imageContainerRef}
-            className="lg:col-span-5 flex items-center justify-center lg:justify-end will-change-transform"
-          >
-            <div className="relative w-full max-w-[420px] lg:max-w-none aspect-[16/10] sm:aspect-[16/9] lg:aspect-[4/3] rounded-3xl sm:rounded-[2rem] overflow-hidden border border-[#2A130A]/15 bg-gradient-to-br from-[#F7E8CF] via-[#F0DDC0] to-[#E5CCA8] shadow-xl shadow-[#2A130A]/10 p-2 group">
-              
-              {/* Inner framing outline */}
-              <div className="absolute inset-2.5 rounded-2xl sm:rounded-[1.5rem] border border-[#2A130A]/10 pointer-events-none z-10" />
+        </div>
 
-              {/* Interactive 3D Exploded Vada Pav with Instant 2D Fallback */}
-              <div className="w-full h-full rounded-2xl sm:rounded-[1.5rem] overflow-hidden">
-                <React.Suspense
-                  fallback={
-                    <img
-                      src="/assets/gajanand-ingredients.webp"
-                      alt="ગજાનંદ વડાપાઉંની સામગ્રી - પાવ, બટાકા વડો, લીલી ચટણી, લસણ મસાલો અને લીલું મરચું"
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover object-center rounded-2xl sm:rounded-[1.5rem]"
-                    />
-                  }
-                >
-                  <ExplodedVadaPav3D explosionProgressRef={explosionProgressRef} />
-                </React.Suspense>
-              </div>
+        {/* Core Layout Grid: Left Text Block + Center/Right Exploded Product Anatomy Spread */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center flex-1 my-auto">
+          
+          {/* ========================================================= */}
+          {/* LEFT ZONE: Dominant Gujarati Typography & Story           */}
+          {/* ========================================================= */}
+          <div className="lg:col-span-4 xl:col-span-4 flex flex-col justify-center">
+            
+            {/* Main Display Heading */}
+            <h2
+              ref={headingRef}
+              className="font-['Noto_Serif_Gujarati',serif] font-black text-5xl sm:text-6xl lg:text-5xl xl:text-6xl tracking-tight leading-[1.08] text-[#1A0A04] will-change-transform"
+            >
+              સ્વાદની
+              <span className="block text-[#8F3418] mt-1">
+                અસલી ઓળખ
+              </span>
+            </h2>
 
-              {/* Soft Warm Lighting Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#2A130A]/20 via-transparent to-transparent pointer-events-none z-10" />
+            {/* Supporting Headline */}
+            <p
+              ref={subHeadingRef}
+              className="font-['Noto_Sans_Gujarati',sans-serif] font-bold text-lg sm:text-xl text-[#2A130A] mt-4 sm:mt-5 leading-snug will-change-transform"
+            >
+              દરેક ઘટક, એક ખાસ કારણથી. સાથે મળીને બને છે ગજાનંદ વડાપાવનો અનોખો સ્વાદ.
+            </p>
 
-              {/* Floating Layer Detail Tag */}
-              <div className="absolute bottom-4 right-4 z-20 px-3 py-1.5 rounded-full bg-[#2A130A]/85 border border-[#D96814]/30 backdrop-blur-md flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D96814]" />
-                <span className="font-['Noto_Serif_Gujarati',serif] text-xs font-bold text-[#F7E8CF]">
-                  ૫ સ્વાદિષ્ટ સ્તરો
+            {/* Fine Editorial Rule */}
+            <div className="w-16 h-[1.5px] bg-[#8F3418]/30 my-5 sm:my-6" />
+
+            {/* Additional Story Paragraph */}
+            <p
+              ref={paragraphRef}
+              className="font-['Noto_Sans_Gujarati',sans-serif] text-sm sm:text-base text-[#2A130A]/85 font-normal leading-relaxed max-w-md will-change-transform"
+            >
+              તાજા, શુદ્ધ અને ગુણવત્તાવાળા ઘટકોનું સુમેળ, ગુજરાતની પરંપરાગત સ્વાદ સાથે — એ જ છે ગજાનંદ વડાપાવની ઓળખ.
+            </p>
+
+            {/* Editorial Link CTA */}
+            <div ref={ctaRef} className="mt-7 sm:mt-8 will-change-transform">
+              <button
+                onClick={handleScrollToOrder}
+                className="group relative inline-flex items-center gap-2.5 font-['Noto_Sans_Gujarati',sans-serif] font-bold text-base sm:text-lg text-[#1A0A04] hover:text-[#8F3418] transition-colors duration-[170ms] link-underline-grow cursor-pointer"
+                aria-label="અમારા ઘટકો જાણો"
+              >
+                <span>અમારા ઘટકો જાણો</span>
+                <span className="text-[#8F3418] transition-transform duration-[170ms] ease-out group-hover:translate-x-1.5">
+                  →
                 </span>
+              </button>
+            </div>
+
+          </div>
+
+          {/* ========================================================= */}
+          {/* CENTER & RIGHT ZONE: Desktop Exploded Visual & Callouts    */}
+          {/* ========================================================= */}
+          <div className="hidden lg:flex lg:col-span-8 xl:col-span-8 relative items-center justify-center min-h-[540px] xl:min-h-[580px]">
+            
+            {/* Desktop Left-Side Callouts (01, 02, 03) */}
+            <div className="flex absolute left-0 top-0 bottom-0 w-[28%] flex-col justify-between py-6 z-20 pointer-events-auto">
+              {INGREDIENT_CALLOUTS.slice(0, 3).map((item, idx) => (
+                <div
+                  key={item.num}
+                  ref={(el) => {
+                    if (el) calloutRefs.current[idx] = el;
+                  }}
+                  className="group relative flex flex-col text-right cursor-default will-change-transform transition-all duration-[170ms] hover:-translate-x-1"
+                >
+                  <div className="flex items-center justify-end gap-2 mb-1">
+                    <span className="font-['Syne',sans-serif] text-xs font-black tracking-wider text-[#8F3418] group-hover:text-[#D96814] transition-colors duration-[170ms]">
+                      {item.num}
+                    </span>
+                    <h3 className="font-['Noto_Serif_Gujarati',serif] font-bold text-lg text-[#1A0A04] group-hover:text-[#8F3418] transition-colors duration-[170ms]">
+                      {item.name}
+                    </h3>
+                  </div>
+                  <p className="font-['Noto_Sans_Gujarati',sans-serif] text-xs text-[#2A130A]/80 font-normal leading-relaxed">
+                    {item.desc}
+                  </p>
+
+                  {/* 1px Dark Brown Connector Line to Center Product */}
+                  <div
+                    ref={(el) => {
+                      if (el) connectorRefs.current[idx] = el;
+                    }}
+                    className="hidden xl:block absolute right-[-40px] top-4 w-9 h-[1px] bg-[#2A130A]/50 group-hover:bg-[#D96814] group-hover:w-11 transition-all duration-[170ms] origin-left"
+                  >
+                    <span className="absolute right-0 top-[-2px] w-1.5 h-1.5 rounded-full bg-[#2A130A] group-hover:bg-[#D96814] transition-colors duration-[170ms]" />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Central Exploded Vada Pav Visual (Desktop) */}
+            <div
+              ref={productVisualRef}
+              className="relative w-full max-w-[380px] xl:max-w-[440px] aspect-[4/5] flex items-center justify-center will-change-transform z-10"
+            >
+              {/* Subtle Warm Shadow / Ambient Glow Underneath */}
+              <div
+                className="absolute inset-x-8 bottom-6 h-20 rounded-full bg-[#2A130A]/20 blur-2xl pointer-events-none"
+                aria-hidden="true"
+              />
+              <div
+                className="absolute inset-8 rounded-full bg-gradient-to-tr from-[#D96814]/15 via-[#F2A321]/10 to-transparent blur-2xl pointer-events-none"
+                aria-hidden="true"
+              />
+
+              {/* Exploded Ingredients Image with Transparent Background */}
+              <img
+                src="/assets/gajanand-ingredients-exploded.webp"
+                alt="ગજાનંદ વડાપાઉં ઘટકોનું એક્સપ્લોડેડ એનાટોમી — પાવ, ડુંગળી, બટાકા વડો, લસણ મસાલો, લીલી ચટણી અને લીલું મરચું"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-contain object-center drop-shadow-[0_15px_30px_rgba(42,19,10,0.18)]"
+              />
+            </div>
+
+            {/* Desktop Right-Side Callouts (04, 05, 06) */}
+            <div className="flex absolute right-0 top-0 bottom-0 w-[28%] flex-col justify-between py-6 z-20 pointer-events-auto">
+              {INGREDIENT_CALLOUTS.slice(3, 6).map((item, idx) => (
+                <div
+                  key={item.num}
+                  ref={(el) => {
+                    if (el) calloutRefs.current[idx + 3] = el;
+                  }}
+                  className="group relative flex flex-col text-left cursor-default will-change-transform transition-all duration-[170ms] hover:translate-x-1"
+                >
+                  {/* 1px Dark Brown Connector Line from Center Product */}
+                  <div
+                    ref={(el) => {
+                      if (el) connectorRefs.current[idx + 3] = el;
+                    }}
+                    className="hidden xl:block absolute left-[-40px] top-4 w-9 h-[1px] bg-[#2A130A]/50 group-hover:bg-[#D96814] group-hover:w-11 transition-all duration-[170ms] origin-right"
+                  >
+                    <span className="absolute left-0 top-[-2px] w-1.5 h-1.5 rounded-full bg-[#2A130A] group-hover:bg-[#D96814] transition-colors duration-[170ms]" />
+                  </div>
+
+                  <div className="flex items-center justify-start gap-2 mb-1">
+                    <h3 className="font-['Noto_Serif_Gujarati',serif] font-bold text-lg text-[#1A0A04] group-hover:text-[#8F3418] transition-colors duration-[170ms]">
+                      {item.name}
+                    </h3>
+                    <span className="font-['Syne',sans-serif] text-xs font-black tracking-wider text-[#8F3418] group-hover:text-[#D96814] transition-colors duration-[170ms]">
+                      {item.num}
+                    </span>
+                  </div>
+                  <p className="font-['Noto_Sans_Gujarati',sans-serif] text-xs text-[#2A130A]/80 font-normal leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Right-Side Micro Detail: Vertical Handwritten Phrase + Heritage Seal */}
+            <div
+              ref={sideDetailRef}
+              className="hidden 2xl:flex absolute -right-14 top-1/2 -translate-y-1/2 flex-col items-center gap-6 pointer-events-none select-none will-change-transform"
+              aria-hidden="true"
+            >
+              {/* Circular Heritage Seal SVG */}
+              <div className="w-16 h-16 opacity-30 text-[#8F3418]">
+                <svg viewBox="0 0 100 100" className="w-full h-full stroke-current fill-none" strokeWidth="1.5">
+                  <circle cx="50" cy="50" r="46" strokeDasharray="3 3" />
+                  <circle cx="50" cy="50" r="38" />
+                  <path id="sealTextPath" d="M 50, 50 m -30, 0 a 30,30 0 1,1 60,0 a 30,30 0 1,1 -60,0" fill="none" />
+                  <text className="text-[7.5px] tracking-[0.2em] uppercase fill-current font-semibold">
+                    <textPath href="#sealTextPath" startOffset="0%">
+                      TRADITIONAL TASTE • GUJARAT •
+                    </textPath>
+                  </text>
+                  <circle cx="50" cy="50" r="4" fill="currentColor" />
+                </svg>
               </div>
+
+              {/* Vertical Handwritten Phrase */}
+              <div className="writing-mode-vertical origin-center rotate-180 font-serif italic text-xs tracking-widest text-[#8F3418]/70 uppercase">
+                Fresh • Authentic • Gujarati
+              </div>
+            </div>
+
+          </div>
+
+          {/* ========================================================= */}
+          {/* MOBILE PRODUCT VIEW (<= 768px / < 1024px)                 */}
+          {/* ========================================================= */}
+          <div className="flex lg:hidden flex-col items-center justify-center w-full my-4">
+            <div className="w-[85%] max-w-[340px] aspect-square relative flex items-center justify-center">
+              <div className="absolute inset-4 rounded-full bg-[#2A130A]/15 blur-xl pointer-events-none" />
+              <img
+                src="/assets/gajanand-ingredients-assembled.webp"
+                alt="ગજાનંદ અસલી વડાપાઉં"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-contain object-center drop-shadow-xl"
+              />
             </div>
           </div>
 
         </div>
 
-        {/* Horizontal Connector Baseline (Visible on Desktop / Large Tablet) */}
-        <div
-          ref={lineRef}
-          className="hidden lg:block w-full h-[1.5px] bg-gradient-to-r from-[#D96814]/30 via-[#2A130A]/20 to-[#D96814]/30 mb-8 will-change-transform"
-          aria-hidden="true"
-        />
-
-        {/* 5-Item Ingredient Showcase Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-6">
-          {INGREDIENTS.map((item, index) => (
-            <div
-              key={item.num}
-              ref={(el) => {
-                if (el) cardsRef.current[index] = el;
-              }}
-              className="group relative flex flex-col justify-between pt-2 pb-6 lg:pb-2 border-b lg:border-b-0 border-[#2A130A]/15 last:border-b-0 will-change-transform cursor-default"
-            >
-              {/* Top Row: Index Badge & Gujarati Subtitle */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="font-['Syne',sans-serif] text-xs font-extrabold tracking-widest text-[#2A130A]/50 group-hover:text-[#D96814] transition-colors duration-[170ms]">
-                    {item.num}
-                  </span>
-                  <span className="font-sans text-[10px] tracking-wider font-semibold text-[#C98B5B] uppercase opacity-75">
-                    {item.english}
-                  </span>
-                </div>
-
-                {/* Minimalist SVG Illustration Container */}
-                <div className="mb-5 flex items-center justify-start text-[#2A130A]/85 group-hover:text-[#D96814] transition-colors duration-[170ms]">
-                  <div className="p-2 rounded-xl bg-[#2A130A]/[0.03] border border-[#2A130A]/10 group-hover:border-[#D96814]/30 transition-colors duration-[170ms]">
-                    <div className="group-hover:-translate-y-1 transition-transform duration-[170ms] ease-out">
-                      {item.icon}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Gujarati Ingredient Name */}
-                <h3 className="font-['Noto_Serif_Gujarati',serif] font-bold text-xl sm:text-2xl text-[#1A0A04] group-hover:text-[#D96814] transition-colors duration-[170ms] mb-2 leading-snug">
+        {/* Mobile & Tablet Vertical Callout List (< 1024px) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-10 border-t border-[#8F3418]/15 lg:hidden">
+          {INGREDIENT_CALLOUTS.map((item) => (
+            <div key={item.num} className="flex flex-col">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="font-['Syne',sans-serif] text-xs font-black text-[#8F3418]">
+                  {item.num}
+                </span>
+                <h3 className="font-['Noto_Serif_Gujarati',serif] font-bold text-base text-[#1A0A04]">
                   {item.name}
                 </h3>
-
-                {/* One-Line Description */}
-                <p className="font-['Noto_Sans_Gujarati',sans-serif] text-sm sm:text-base text-[#2A130A]/75 group-hover:text-[#2A130A] font-normal leading-relaxed transition-colors duration-[170ms]">
-                  {item.desc}
-                </p>
               </div>
-
-              {/* Bottom Subtle Accent Indicator on Hover */}
-              <div className="mt-5 w-8 h-[2px] bg-[#2A130A]/15 group-hover:bg-[#D96814] group-hover:w-14 transition-all duration-[170ms] ease-out" />
+              <p className="font-['Noto_Sans_Gujarati',sans-serif] text-xs text-[#2A130A]/85 font-normal leading-relaxed">
+                {item.desc}
+              </p>
             </div>
           ))}
         </div>
 
       </div>
+
+      {/* ========================================================= */}
+      {/* BOTTOM HERITAGE STRIP (Dark Deep Brown-Black + Torn Edge) */}
+      {/* ========================================================= */}
+      <div
+        ref={bottomStripRef}
+        className="relative w-full bg-[#120B07] text-[#F7E8CF] z-20 will-change-transform mt-6"
+      >
+        {/* Irregular Torn-Paper Top Boundary Silhouette */}
+        <div
+          className="absolute -top-4 sm:-top-5 left-0 w-full h-5 sm:h-6 pointer-events-none overflow-hidden"
+          aria-hidden="true"
+        >
+          <svg
+            className="w-full h-full fill-[#120B07]"
+            viewBox="0 0 1440 30"
+            preserveAspectRatio="none"
+          >
+            <path d="M0,30 L1440,30 L1440,10 C1380,24 1320,8 1260,22 C1200,10 1140,25 1080,12 C1020,24 960,9 900,23 C840,11 780,26 720,10 C660,24 600,12 540,25 C480,9 420,24 360,11 C300,25 240,10 180,24 C120,9 60,22 0,12 Z" />
+          </svg>
+        </div>
+
+        {/* Inner Content Grid with Values & Heritage Descriptor */}
+        <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-5 sm:py-6 flex flex-col lg:flex-row items-center justify-between gap-6">
+          
+          {/* Far Left: Subtle Heritage Cart Silhouette Icon & Note */}
+          <div className="hidden xl:flex items-center gap-3 text-[#C98B5B]/80" aria-hidden="true">
+            <svg viewBox="0 0 32 32" className="w-5 h-5 stroke-current fill-none" strokeWidth="1.5">
+              <path d="M4 22h24M8 22v-8h16v8M6 14h20l-2-6H8l-2 6zM11 26a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM21 26a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+            </svg>
+            <span className="font-['Noto_Sans_Gujarati',sans-serif] text-xs">
+              સ્વાદનો વારસો
+            </span>
+          </div>
+
+          {/* 4 Value Items with Saffron Line Accents */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 w-full lg:w-auto">
+            {VALUE_ITEMS.map((val) => (
+              <div key={val.label} className="flex items-center gap-2.5 text-[#D96814]">
+                <div className="p-1.5 rounded-full bg-[#D96814]/10 border border-[#D96814]/25 flex-shrink-0">
+                  {val.icon}
+                </div>
+                <span className="font-sans text-[10px] sm:text-[11px] font-bold tracking-[0.18em] text-[#F7E8CF]/90 uppercase">
+                  {val.label}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Far Right: Editorial Legacy Stamp */}
+          <div className="text-center lg:text-right border-t lg:border-t-0 border-[#D96814]/20 pt-3 lg:pt-0 w-full lg:w-auto">
+            <p className="font-['Syne',sans-serif] text-[10px] sm:text-[11px] font-black tracking-[0.25em] text-[#C98B5B] uppercase">
+              MORE THAN A SNACK • A LEGACY
+            </p>
+          </div>
+
+        </div>
+      </div>
+
     </section>
   );
 }
