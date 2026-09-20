@@ -276,7 +276,7 @@ export default function IngredientsSection() {
     <section
       id="ingredients"
       ref={sectionRef}
-      className="relative w-full min-h-screen lg:min-h-[118vh] bg-[#F7E8CF] text-[#1A0A04] overflow-hidden flex flex-col justify-between select-none"
+      className="relative w-full min-h-screen lg:min-h-[118vh] bg-[#F7E8CF] text-[#1A0A04] overflow-hidden flex flex-col justify-between"
       aria-label="ગજાનંદ સ્વાદની અંદરની વાત — ઘટકોની ઓળખ"
     >
       {/* Background Texture: Parchment Texture Overlay (14% Opacity) */}

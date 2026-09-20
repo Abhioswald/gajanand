@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -54,8 +54,6 @@ export default function Footer() {
   const valuesRef = useRef(null);
   const darkColsRef = useRef(null);
   const dividerRef = useRef(null);
-
-  const [emailInput, setEmailInput] = useState('');
 
   useEffect(() => {
     const footer = footerRef.current;
@@ -172,15 +170,11 @@ export default function Footer() {
     }
   };
 
-  const handleNewsletterSubmit = (e) => {
-    e.preventDefault();
-  };
-
   return (
     <footer
       id="site-footer"
       ref={footerRef}
-      className="relative w-full overflow-hidden select-none"
+      className="relative w-full overflow-hidden"
       aria-label="ગજાનંદ ફૂટર"
     >
       {/* ========================================================= */}
@@ -252,7 +246,7 @@ export default function Footer() {
                 <div className="flex items-center gap-3 mb-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#D96814] shadow-[0_0_8px_#D96814]" />
                   <span className="font-['Syne',sans-serif] text-xs font-bold tracking-[0.25em] text-[#8F3418] uppercase">
-                    EST. 1998 • GUJARAT
+                    GUJARAT • AUTHENTIC TASTE
                   </span>
                 </div>
 
@@ -435,82 +429,15 @@ export default function Footer() {
               </p>
             </div>
 
-            {/* COLUMN 4 — STAY CONNECTED & SOCIALS (lg:col-span-3) */}
+            {/* COLUMN 4 — STAY CONNECTED & UPDATES (lg:col-span-3) */}
             <div className="lg:col-span-3 flex flex-col justify-start">
-              <h3 className="font-['Noto_Sans_Gujarati',sans-serif] text-xs font-bold tracking-widest text-[#C98B5B] uppercase mb-2">
+              <h3 className="font-['Noto_Sans_Gujarati',sans-serif] text-xs font-bold tracking-widest text-[#C98B5B] uppercase mb-4">
                 અમારી સાથે જોડાયેલા રહો
               </h3>
 
-              <p className="font-['Noto_Sans_Gujarati',sans-serif] text-xs text-[#F7E8CF]/70 leading-relaxed mb-3">
-                નવા સ્ટોર, ખાસ ઓફર અને અપડેટ માટે.
+              <p className="font-['Noto_Sans_Gujarati',sans-serif] text-sm text-[#F7E8CF]/75 leading-relaxed">
+                નવા સ્વાદ, ખાસ વાનગીઓ અને તાજી અપડેટ્સ.
               </p>
-
-              {/* Newsletter UI */}
-              <form onSubmit={handleNewsletterSubmit} className="flex items-center mb-4">
-                <input
-                  type="email"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  placeholder="તમારું ઈમેઈલ..."
-                  className="w-full bg-[#1A0D07] border border-[#F7E8CF]/20 rounded-l-lg px-3 py-2 text-xs text-[#F7E8CF] placeholder-[#F7E8CF]/40 focus:outline-none focus:border-[#D96814]"
-                  aria-label="ઈમેઈલ દાખલ કરો"
-                />
-                <button
-                  type="submit"
-                  className="group bg-[#D96814] hover:bg-[#E98224] text-[#120B07] px-3.5 py-2 rounded-r-lg font-bold text-xs transition-all duration-[160ms] cursor-pointer"
-                  aria-label="સબસ્ક્રાઇબ કરો"
-                >
-                  <span className="inline-block transition-transform duration-[160ms] group-hover:translate-x-1">
-                    →
-                  </span>
-                </button>
-              </form>
-
-              {/* Social Icon Buttons (Accessible, Safe Placeholders) */}
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  aria-label="Instagram"
-                  className="w-8 h-8 rounded-lg border border-[#F7E8CF]/20 hover:border-[#D96814] hover:text-[#D96814] flex items-center justify-center text-xs text-[#F7E8CF]/70 transition-all duration-[160ms] hover:-translate-y-0.5 cursor-pointer"
-                >
-                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 stroke-current fill-none" strokeWidth="1.8">
-                    <rect x="2" y="2" width="20" height="20" rx="5" />
-                    <circle cx="12" cy="12" r="4" />
-                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
-                  </svg>
-                </button>
-
-                <button
-                  type="button"
-                  aria-label="Facebook"
-                  className="w-8 h-8 rounded-lg border border-[#F7E8CF]/20 hover:border-[#D96814] hover:text-[#D96814] flex items-center justify-center text-xs text-[#F7E8CF]/70 transition-all duration-[160ms] hover:-translate-y-0.5 cursor-pointer"
-                >
-                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 stroke-current fill-none" strokeWidth="1.8">
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                  </svg>
-                </button>
-
-                <button
-                  type="button"
-                  aria-label="YouTube"
-                  className="w-8 h-8 rounded-lg border border-[#F7E8CF]/20 hover:border-[#D96814] hover:text-[#D96814] flex items-center justify-center text-xs text-[#F7E8CF]/70 transition-all duration-[160ms] hover:-translate-y-0.5 cursor-pointer"
-                >
-                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 stroke-current fill-none" strokeWidth="1.8">
-                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
-                    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor" />
-                  </svg>
-                </button>
-
-                <button
-                  type="button"
-                  aria-label="WhatsApp"
-                  className="w-8 h-8 rounded-lg border border-[#F7E8CF]/20 hover:border-[#D96814] hover:text-[#D96814] flex items-center justify-center text-xs text-[#F7E8CF]/70 transition-all duration-[160ms] hover:-translate-y-0.5 cursor-pointer"
-                >
-                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 stroke-current fill-none" strokeWidth="1.8">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                  </svg>
-                </button>
-              </div>
             </div>
 
           </div>

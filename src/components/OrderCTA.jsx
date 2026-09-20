@@ -234,7 +234,7 @@ export default function OrderCTA() {
     <section
       id="order-cta"
       ref={sectionRef}
-      className="relative w-full min-h-screen lg:min-h-[105vh] bg-[#120B07] text-[#F7E8CF] overflow-hidden flex flex-col justify-between select-none"
+      className="relative w-full min-h-screen lg:min-h-[105vh] bg-[#120B07] text-[#F7E8CF] overflow-hidden flex flex-col justify-between"
       aria-label="ગજાનંદ ઓર્ડર કરો — તાજું અને ગરમાગરમ"
     >
       {/* Barely Visible CSS Paper / Grain Texture (<8% intensity) */}
@@ -507,7 +507,7 @@ export default function OrderCTA() {
 
           {/* Right: Heritage note */}
           <div className="font-['Syne',sans-serif] tracking-widest uppercase text-[10px]">
-            SINCE 1978 • ANAND & PETLAD
+            ANAND & PETLAD • GUJARAT
           </div>
         </div>
       </div>

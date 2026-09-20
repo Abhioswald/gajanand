@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Hero3DAccents from './three/Hero3DAccents';
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -291,8 +290,7 @@ export default function ScrollVideoHero() {
           </video>
         </div>
 
-        {/* Selective 3D Foreground Spice & Chilli Accents */}
-        <Hero3DAccents isReducedMotion={isReducedMotion} />
+
 
         {/* Gujarat Cinematic Atmospheric Gradient Overlays */}
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#120B07] via-transparent to-[#120B07]/70" />

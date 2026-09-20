@@ -185,7 +185,7 @@ export default function BrandStory() {
     <section
       id="brand-story"
       ref={sectionRef}
-      className="relative w-full min-h-screen lg:min-h-[110vh] bg-[#120B07] text-[#1F110B] overflow-hidden flex flex-col justify-between select-none"
+      className="relative w-full min-h-screen lg:min-h-[110vh] bg-[#120B07] text-[#1F110B] overflow-hidden flex flex-col justify-between"
       aria-label="Brand Story: ગજાનંદ વારસાગાથા અને પેટલાદ ધરોહર"
     >
       {/* Main Two-Zone Spread (Parchment Left + Cinematic Petlad Right) */}
@@ -282,7 +282,7 @@ export default function BrandStory() {
               ref={paragraphRef}
               className="font-['Noto_Sans_Gujarati',sans-serif] text-sm sm:text-base md:text-[1.05rem] text-[#2A130A]/85 font-normal leading-relaxed mt-4 sm:mt-5 max-w-lg will-change-transform"
             >
-              પેટલાદની ઐતિહાસિક ધરતી પરથી શરૂ થયેલી આ સફર આજે દરેક ગુજરાતીના દિલમાં વસી છે. પેઢીઓ જૂની રેસિપી, ચટપટી લસણની ચટણી, સુગંધિત દેશી મસાલા અને ગરમાગરમ પાઉંનો એ અનોખો મેળાવડો — જ્યાં સ્વાદ માત્ર ભૂખ સંતોષતો નથી, પરંતુ ગૌરવશાળી પરંપરાને જીવંત રાખે છે.
+              પેટલાદની ઐતિહાસિક ધરતી પરથી શરૂ થયેલી આ સફર આજે દરેક ગુજરાતીના દિલમાં વસી છે. અસલી ગુજરાતી રેસિપી, ચટપટી લસણની ચટણી, સુગંધિત દેશી મસાલા અને ગરમાગરમ પાઉંનો એ અનોખો મેળાવડો — જ્યાં સ્વાદ માત્ર ભૂખ સંતોષતો નથી, પરંતુ ગૌરવશાળી પરંપરાને જીવંત રાખે છે.
             </p>
 
             {/* Interactive Editorial CTA */}
@@ -399,7 +399,7 @@ export default function BrandStory() {
                 <span className="text-[#F2A321]">A Legacy.</span>”
               </p>
               <p className="font-['Noto_Sans_Gujarati',sans-serif] text-xs sm:text-sm text-[#F7E8CF]/80 font-medium tracking-wider mt-2.5 drop-shadow">
-                ગરમાગરમ સ્વાદ, પેઢીઓનો વિશ્વાસ.
+                ગરમાગરમ સ્વાદ, ગુજરાતનો વિશ્વાસ.
               </p>
             </div>
           </div>
@@ -481,7 +481,7 @@ export default function BrandStory() {
           <div className="flex items-center gap-4 text-[10px] sm:text-[11px] tracking-[0.2em] text-[#C98B5B]/80 uppercase font-semibold">
             <span>AUTHENTIC TASTE</span>
             <span>•</span>
-            <span>SINCE 1978</span>
+            <span>GUJARAT HERITAGE</span>
           </div>
         </div>
       </div>

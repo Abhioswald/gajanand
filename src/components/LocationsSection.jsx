@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -6,7 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const VALUES = [
   {
-    label: 'વધતા સ્ટોર',
+    label: 'દેશી પરંપરા',
     icon: (
       <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -48,21 +48,15 @@ const VALUES = [
 const LOCATIONS = [
   {
     name: 'આણંદ',
-    tag: 'મુખ્ય સ્થાન',
+    tag: 'કેન્દ્ર',
     isPrimary: true,
-    desc: 'વિદ્યાનગર રોડ • જૂનું બસ સ્ટેન્ડ',
+    desc: 'અસલી દેશી સ્વાદ અને સેવા',
   },
   {
     name: 'પેટલાદ',
-    tag: 'તમારી નજીક',
+    tag: 'મૂળ સ્થાન',
     isPrimary: false,
-    desc: 'સ્ટેશન રોડ • મુખ્ય બજાર',
-  },
-  {
-    name: 'બીજા શહેરો',
-    tag: 'જલ્દી વધુ સ્થળોએ',
-    isUpcoming: true,
-    desc: 'અમદાવાદ, વડોદરા, સુરત ટૂંક સમયમાં',
+    desc: 'ગજાનંદ સ્વાદની ઐતિહાસિક શરૂઆત',
   },
 ];
 
@@ -72,7 +66,6 @@ export default function LocationsSection() {
   const headingRef = useRef(null);
   const paragraphRef = useRef(null);
   const handwrittenRef = useRef(null);
-  const searchRef = useRef(null);
   const mapWrapRef = useRef(null);
   const anandPinRef = useRef(null);
   const petladPinRef = useRef(null);
@@ -82,8 +75,6 @@ export default function LocationsSection() {
   const valuesRef = useRef(null);
   const heritageLineRef = useRef(null);
   const stampRef = useRef(null);
-
-  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -99,7 +90,6 @@ export default function LocationsSection() {
             headingRef.current,
             paragraphRef.current,
             handwrittenRef.current,
-            searchRef.current,
             mapWrapRef.current,
             anandPinRef.current,
             petladPinRef.current,
@@ -165,27 +155,17 @@ export default function LocationsSection() {
         );
       }
 
-      // 5. Search UI reveals
-      if (searchRef.current) {
-        tl.fromTo(
-          searchRef.current,
-          { opacity: 0, y: 14 },
-          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
-          0.28
-        );
-      }
-
-      // 6. Map image fades/rises slightly
+      // 5. Map image fades/rises slightly
       if (mapWrapRef.current) {
         tl.fromTo(
           mapWrapRef.current,
           { opacity: 0, y: 16 },
           { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
-          0.32
+          0.28
         );
       }
 
-      // 7. Anand marker reveals first
+      // 6. Anand marker reveals first
       if (anandPinRef.current) {
         tl.fromTo(
           anandPinRef.current,
@@ -274,15 +254,11 @@ export default function LocationsSection() {
     };
   }, []);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-  };
-
   return (
     <section
       id="locations"
       ref={sectionRef}
-      className="relative w-full min-h-screen lg:min-h-[110vh] bg-[#F7E8CF] text-[#2A130A] overflow-hidden flex flex-col justify-between select-none"
+      className="relative w-full min-h-screen lg:min-h-[110vh] bg-[#F7E8CF] text-[#2A130A] overflow-hidden flex flex-col justify-between"
       aria-label="ગજાનંદ લોકેશન્સ — આણંદ અને પેટલાદ"
     >
       {/* Subtle Warm Parchment Texture Overlay (< 6% intensity) */}
@@ -363,36 +339,8 @@ export default function LocationsSection() {
               </div>
             </div>
 
-            {/* Clean Location Search Bar UI */}
-            <form
-              ref={searchRef}
-              onSubmit={handleSearchSubmit}
-              className="mt-6 sm:mt-7 relative flex items-center w-full max-w-md bg-[#F3DFC2]/70 border border-[#8F3418]/30 rounded-xl p-1.5 focus-within:border-[#D96814] focus-within:ring-2 focus-within:ring-[#D96814]/20 transition-all will-change-transform"
-            >
-              <div className="pl-3 pr-2 text-[#8F3418]" aria-hidden="true">
-                <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-              </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="તમારું શહેર શોધો..."
-                className="w-full bg-transparent font-['Noto_Sans_Gujarati',sans-serif] text-sm sm:text-base text-[#1A0A04] placeholder-[#2A130A]/50 focus:outline-none px-2 py-1.5"
-                aria-label="તમારું શહેર શોધો"
-              />
-              <button
-                type="submit"
-                className="px-5 py-2 rounded-lg bg-[#D96814] hover:bg-[#E98224] text-[#120B07] font-['Noto_Sans_Gujarati',sans-serif] font-bold text-sm tracking-wide transition-all duration-[170ms] hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer flex-shrink-0"
-              >
-                શોધો
-              </button>
-            </form>
-
             {/* Map Visual & Locations Section */}
-            <div className="mt-8 flex flex-col sm:flex-row items-center gap-6">
+            <div className="mt-8 sm:mt-9 flex flex-col sm:flex-row items-center gap-6">
               
               {/* Stylized Gujarat Map Silhouette with Anand & Petlad Markers */}
               <div
@@ -538,7 +486,7 @@ export default function LocationsSection() {
                   ગજાનંદ • આણંદ & પેટલાદ
                 </span>
                 <span className="text-[10px] tracking-wider text-[#C98B5B] uppercase font-semibold">
-                  ACTIVE
+                  GUJARAT
                 </span>
               </div>
             </div>
